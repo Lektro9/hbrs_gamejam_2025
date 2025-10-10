@@ -1,10 +1,45 @@
-[gd_scene load_steps=3 format=3 uid="uid://qwcocqrqafx4"]
+[gd_scene load_steps=10 format=3 uid="uid://qwcocqrqafx4"]
 
 [ext_resource type="PackedScene" uid="uid://bbmelecmls6ik" path="res://scenes/board.tscn" id="2_0wfyh"]
+[ext_resource type="Script" uid="uid://bhexx6mj1xv3q" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="3_tbgi4"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="4_tefeu"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="5_o6xl0"]
 [ext_resource type="PackedScene" uid="uid://x4exp6b5ihpm" path="res://scenes/version_label.tscn" id="5_tbgi4"]
+[ext_resource type="Script" uid="uid://bhd4nuiu23e7l" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_noise_emitter_2d.gd" id="6_o6xl0"]
+[ext_resource type="Script" uid="uid://dimvdouy8g0sv" path="res://addons/phantom_camera/scripts/resources/phantom_camera_noise_2d.gd" id="7_tipki"]
+
+[sub_resource type="Resource" id="Resource_tipki"]
+script = ExtResource("4_tefeu")
+
+[sub_resource type="Resource" id="Resource_85g3d"]
+script = ExtResource("7_tipki")
+randomize_noise_seed = 1
+noise_seed = 832
+metadata/_custom_type_script = "uid://dimvdouy8g0sv"
 
 [node name="Main" type="Node2D"]
 
 [node name="VersionLabel" parent="." instance=ExtResource("5_tbgi4")]
 
 [node name="Board" parent="." instance=ExtResource("2_0wfyh")]
+
+[node name="PhantomCamera2D" type="Node2D" parent="."]
+script = ExtResource("3_tbgi4")
+tween_resource = SubResource("Resource_tipki")
+draw_limits = true
+metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
+
+[node name="MainCam" type="Camera2D" parent="."]
+editor_draw_limits = true
+
+[node name="PhantomCameraHost" type="Node" parent="MainCam"]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("5_o6xl0")
+metadata/_custom_type_script = "uid://bd046eokvcnu2"
+
+[node name="ScreenShake" type="Node2D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("6_o6xl0")
+noise = SubResource("Resource_85g3d")
+metadata/_custom_type_script = "uid://bhd4nuiu23e7l"
