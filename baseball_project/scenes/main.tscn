@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://qwcocqrqafx4"]
+
+[ext_resource type="PackedScene" uid="uid://x4exp6b5ihpm" path="res://scenes/version_label.tscn" id="5_tbgi4"]
+
+[node name="Main" type="Node2D"]
+
+[node name="VersionLabel" parent="." instance=ExtResource("5_tbgi4")]
