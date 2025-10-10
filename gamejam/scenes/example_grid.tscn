@@ -1,0 +1,49 @@
+[gd_scene load_steps=5 format=3 uid="uid://dpch704qt62ui"]
+
+[ext_resource type="Texture2D" uid="uid://cy6rqblv41xpv" path="res://images/baseballfield.png" id="1_k3e4r"]
+[ext_resource type="Texture2D" uid="uid://bb8m2mmifgm2m" path="res://images/blue_chip.png" id="2_r105s"]
+[ext_resource type="Texture2D" uid="uid://ehpyxt8bfrjb" path="res://images/red_chip.png" id="3_72cot"]
+[ext_resource type="Texture2D" uid="uid://d1cycydp81at7" path="res://images/playgrid.png" id="4_j141u"]
+
+[node name="ExampleGrid" type="Node2D"]
+
+[node name="Baseballfield" type="Sprite2D" parent="."]
+modulate = Color(0.5370987, 0.5370987, 0.5370987, 1)
+position = Vector2(766, 281)
+texture = ExtResource("1_k3e4r")
+
+[node name="BlueChip" type="Sprite2D" parent="."]
+position = Vector2(482.846, 616.846)
+scale = Vector2(0.7944691, 0.7944691)
+texture = ExtResource("2_r105s")
+
+[node name="BlueChip2" type="Sprite2D" parent="."]
+position = Vector2(704, 514)
+scale = Vector2(0.7944691, 0.7944691)
+texture = ExtResource("2_r105s")
+
+[node name="BlueChip3" type="Sprite2D" parent="."]
+position = Vector2(482.00003, 514)
+scale = Vector2(0.7944691, 0.7944691)
+texture = ExtResource("2_r105s")
+
+[node name="RedChip" type="Sprite2D" parent="."]
+position = Vector2(703, 617)
+scale = Vector2(0.7944691, 0.7944691)
+texture = ExtResource("3_72cot")
+
+[node name="RedChip2" type="Sprite2D" parent="."]
+position = Vector2(593, 513)
+scale = Vector2(0.7944691, 0.7944691)
+texture = ExtResource("3_72cot")
+
+[node name="RedChip3" type="Sprite2D" parent="."]
+position = Vector2(594, 618)
+scale = Vector2(0.7944691, 0.7944691)
+texture = ExtResource("3_72cot")
+
+[node name="Playgrid" type="Sprite2D" parent="."]
+modulate = Color(0.36909345, 0.777643, 0.3778327, 1)
+position = Vector2(600, 358)
+scale = Vector2(3.9051077, 3.9051077)
+texture = ExtResource("4_j141u")

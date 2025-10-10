@@ -4,6 +4,7 @@ extends Node2D
 @onready var debug_ui: CanvasLayer = $DebugUi
 
 var currentPlayer = 1 # Player 1 and 2
+var testColor = Color(0.955, 0.1, 0.35, 1.0)
 
 func _ready() -> void:
 	if not OS.is_debug_build():
