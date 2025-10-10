@@ -1,7 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://qwcocqrqafx4"]
+[gd_scene load_steps=3 format=3 uid="uid://qwcocqrqafx4"]
 
+[ext_resource type="PackedScene" uid="uid://bbmelecmls6ik" path="res://scenes/board.tscn" id="2_0wfyh"]
 [ext_resource type="PackedScene" uid="uid://x4exp6b5ihpm" path="res://scenes/version_label.tscn" id="5_tbgi4"]
 
 [node name="Main" type="Node2D"]
 
 [node name="VersionLabel" parent="." instance=ExtResource("5_tbgi4")]
+
+[node name="Board" parent="." instance=ExtResource("2_0wfyh")]
