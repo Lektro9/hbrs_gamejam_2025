@@ -1,11 +1,13 @@
 extends Node2D
 @onready var state_chart_debugger: MarginContainer = $StateChartDebugger
 @onready var state_chart: StateChart = $StateChart
+@onready var debug_ui: CanvasLayer = $DebugUi
 
 var currentPlayer = 1 # Player 1 and 2
 
 func _ready() -> void:
 	if not OS.is_debug_build():
+		debug_ui.hide()
 		state_chart_debugger.hide()
 
 func togglePlayer():
