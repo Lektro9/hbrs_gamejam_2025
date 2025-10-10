@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://bbmelecmls6ik"]
+
+[ext_resource type="Texture2D" uid="uid://bqfd1u6uqjhn7" path="res://images/grid.png" id="1_tx6nw"]
+[ext_resource type="Script" uid="uid://xlppmn144ke4" path="res://scenes/board.gd" id="2_nglv8"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fv4ni"]
+resource_name = "grid"
+texture = ExtResource("1_tx6nw")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_dxjtj"]
+sources/0 = SubResource("TileSetAtlasSource_fv4ni")
+
+[node name="Board" type="TileMapLayer"]
+tile_set = SubResource("TileSet_dxjtj")
+navigation_enabled = false
+script = ExtResource("2_nglv8")
