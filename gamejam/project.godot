@@ -17,11 +17,8 @@ config/icon="res://images/icon.svg"
 
 [autoload]
 
-<<<<<<< Updated upstream
 PhantomCameraManager="*res://addons/phantom_camera/scripts/managers/phantom_camera_manager.gd"
-=======
 GameManager="*res://scenes/GameManager.tscn"
->>>>>>> Stashed changes
 
 [display]
 
