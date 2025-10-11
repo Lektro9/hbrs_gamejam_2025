@@ -53,7 +53,6 @@ func get_height():
 func get_width():
 	return BOARD_WIDTH
 
-# TODO
 func update() -> void:
 	# Chip gravity beginning at the bottom
 	for cell in get_row(0):

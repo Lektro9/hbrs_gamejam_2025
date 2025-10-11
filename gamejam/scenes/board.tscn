@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://bbmelecmls6ik"]
+[gd_scene load_steps=4 format=3 uid="uid://bbmelecmls6ik"]
 
 [ext_resource type="Texture2D" uid="uid://bqfd1u6uqjhn7" path="res://images/grid.png" id="1_tx6nw"]
-[ext_resource type="Script" uid="uid://xlppmn144ke4" path="res://scenes/board.gd" id="2_nglv8"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fv4ni"]
 resource_name = "grid"
@@ -17,6 +16,3 @@ sources/0 = SubResource("TileSetAtlasSource_fv4ni")
 tile_set = SubResource("TileSet_dxjtj")
 collision_enabled = false
 navigation_enabled = false
-script = ExtResource("2_nglv8")
-BOARD_WIDTH = 8
-BOARD_HEIGHT = 8

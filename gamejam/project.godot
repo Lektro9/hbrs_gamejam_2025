@@ -18,7 +18,7 @@ config/icon="res://images/icon.svg"
 [autoload]
 
 PhantomCameraManager="*res://addons/phantom_camera/scripts/managers/phantom_camera_manager.gd"
-GameBoard="*res://scenes/board.tscn"
+GameBoard="*res://scenes/board.gd"
 GameManager="*res://scenes/GameManager.tscn"
 
 [display]
