@@ -26,12 +26,12 @@ func _init(height, width):
 	
 	board_cells = {}
 
-	for i in BOARD_WIDTH:
-		for j in BOARD_HEIGHT:	
+	for x in BOARD_WIDTH:
+		for y in BOARD_HEIGHT:
 			# Set cell properties
-			var cell = BoardCell.new(i, j)
+			var cell = BoardCell.new(x, y)
 			
-			board_cells[Vector2i(i, j)] = cell
+			board_cells[Vector2i(x, y)] = cell
 			
 	for board_cell in board_cells:
 		board_cells[board_cell].neighbours = get_board_cell_neighbours(board_cell).filter(func(bc: BoardCell): return bc != null)
@@ -50,16 +50,19 @@ func _chip_gravity(cell: BoardCell) -> void:
 			cell_below.chip = cell.chip
 			cell.chip = null
 			_chip_gravity(cell_below)
+			print(cell_below.coords)
 
 ## Updates the board status
 ## Makes all chips fall down
 func update_board_state() -> void:
 	# Chip gravity beginning at the bottom
-	for r in BOARD_HEIGHT:
-		for cell in get_row(r):
-			_chip_gravity(cell)
+	for y in BOARD_HEIGHT:
+		for x in BOARD_WIDTH:
+			_chip_gravity(get_board_cell_by_coords(x, y))
 		
-	get_clusters()
+	# get_clusters()
+	
+	debug_print()
 	
 	board_updated.emit()
 
@@ -167,12 +170,10 @@ func all_chips_in_play() -> Array[BoardCell]:
 
 ## Drops a chip onto the board
 func drop_chip(chip: Chip, col_num: int):
-	for y in range(BOARD_HEIGHT - 1, -1, -1):
-		var c = get_board_cell_by_coords(col_num, y)
+	var c = get_board_cell_by_coords(col_num, BOARD_HEIGHT - 1)
 		
-		if not c.has_chip():
-			c.assign_chip(chip)
-			break
+	if not c.has_chip():
+		c.assign_chip(chip)
 	
 	update_board_state()
 
@@ -281,7 +282,7 @@ func debug_print():
 	var out := "\n"
 	out += "╔" + "══".repeat(BOARD_WIDTH) + "╗\n"
 	
-	for y in BOARD_HEIGHT: # von unten nach oben
+	for y in range(BOARD_HEIGHT - 1, -1, -1):
 		out += "║"
 		for x in range(BOARD_WIDTH):
 			var cell := get_board_cell_by_coords(x, y)
@@ -289,24 +290,24 @@ func debug_print():
 				out += "· "
 			else:
 				var c := cell.chip
-				var character := ""
+				var char := ""
 				var special_marker := ""
 				
 				match c.player_id:
 					Chip.Ownership.PLAYER_ONE:
-						character = "1"
+						char = "1"
 					Chip.Ownership.PLAYER_TWO:
-						character = "2"
+						char = "2"
 					_:
-						character = "?"
+						char = "?"
 				
 				if c.special_type != Chip.Specials.NORMAL:
 					special_marker = "*"
 				
 				if cell.is_in_cluster:
-					out += "[" + character + special_marker + "]"
+					out += "[" + char + special_marker + "]"
 				else:
-					out += " " + character + special_marker + " "
+					out += " " + char + special_marker + " "
 		out += "║\n"
 	
 	out += "╚" + "══".repeat(BOARD_WIDTH) + "╝\n"
