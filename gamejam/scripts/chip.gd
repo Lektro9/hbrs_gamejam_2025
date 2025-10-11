@@ -8,13 +8,13 @@ extends Node2D
 
 @onready var sprite_2d: Sprite2D = $Sprite2D
 
-func initialize(is_player_one: bool) -> void:
-	_ready() 
-	stats.is_player_one = is_player_one
+func initialize(player_id: int) -> void:
+	_ready()
+	stats = ChipStats.new(false, player_id)
 	
-	if is_player_one:
+	if player_id == 1:
 		sprite_2d.texture = img_blue
-	else:
+	elif player_id == 2:
 		sprite_2d.texture = img_red
 
 
