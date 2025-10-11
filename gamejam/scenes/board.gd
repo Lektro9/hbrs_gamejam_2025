@@ -3,8 +3,9 @@ extends Node2D
 
 signal board_updated
 
-@export var BOARD_WIDTH: int
-@export var BOARD_HEIGHT: int
+@export var BOARD_WIDTH: int = 8
+@export var BOARD_HEIGHT: int = 8
+@export var CLUSTER_MIN_SIZE: int = 4
 
 enum CellDirection {
 	CELL_UP,
@@ -175,7 +176,11 @@ func get_cluster(cell: BoardCell) -> Array[BoardCell]:
 					cluster.push_front(neighbour)
 	
 	for c in cluster:
-		#if 
+		if cluster.size() > CLUSTER_MIN_SIZE:
+			c.is_in_cluster = true
+		else:
+			c.is_in_cluster = false
+		
 		c.is_explored = false
 	
 	return cluster
