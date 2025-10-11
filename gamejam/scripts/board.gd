@@ -282,7 +282,7 @@ func debug_print():
 			if not cell.has_chip():
 				out += ". "
 			else:
-				match cell.chip.ownership:
+				match cell.chip.player_id:
 					Chip.Ownership.PLAYER_ONE:
 						out += "1 "
 					Chip.Ownership.PLAYER_TWO:
