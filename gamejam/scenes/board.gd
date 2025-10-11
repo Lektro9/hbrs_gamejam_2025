@@ -1,3 +1,4 @@
+class_name GameBoardData
 extends Node2D
 
 signal board_updated
@@ -137,13 +138,6 @@ func get_row(row_num: int) -> Array[BoardCell]:
 	
 	return row_cells
 
-# TODO
-func get_column_free_spot(col_num: int):
-	assert(col_num < BOARD_WIDTH, 
-	"Position of column must be smaller than board width, which is %s" % BOARD_WIDTH)
-	
-	pass
-
 func all_chips_in_play() -> Array[BoardCell]:
 	return board_cells.values().filter(func(c: BoardCell): return c.has_chip())
 	
@@ -153,3 +147,38 @@ func drop_chip(chip: ChipStats, col_num: int):
 	if (not cell.has_chip()):
 		cell.assign_chip(chip)
 		_chip_gravity(cell)
+
+# BFS cluster search
+func get_cluster(cell: BoardCell) -> Array[BoardCell]:
+	var cluster: Array[BoardCell] = []
+	var current_cell: BoardCell = cell
+	var root: BoardCell = cell
+	
+	if not current_cell.has_chip():
+		return cluster
+		
+	root.is_explored = true
+	cluster.push_front(root)
+	
+	while not cluster.is_empty():
+		current_cell = cluster.pop_front()
+		
+		if current_cell.has_chip() and not current_cell.is_in_cluster:
+			for 	neighbour: BoardCell in get_board_cell_neighbours(current_cell.coords).filter(func(c: BoardCell): return c.has_chip()):
+				if not neighbour.is_explored:
+					neighbour.is_explored = true
+					cluster.push_front(neighbour)
+	
+	for c in cluster:
+		#if 
+		c.is_explored = false
+	
+	return cluster
+
+func get_clusters():
+	var cells_with_chips = all_chips_in_play()
+	
+	#for cell in cells_with_chips:
+		
+	
+	pass

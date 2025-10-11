@@ -7,9 +7,12 @@ var x: int
 # y coord
 var y: int
 # Holds all neighbours
-var neighbours: Array[BoardCell]
+var neighbours: Array[BoardCell] = []
 
-var chip: ChipStats
+var chip: ChipStats = null
+
+var is_in_cluster: bool = false
+var is_explored: bool = false
 
 var coords: Vector2i:
 	get:
@@ -21,8 +24,6 @@ var coords: Vector2i:
 func _init(x_coord: int, y_coord: int) -> void:
 	self.x = x_coord
 	self.y = y_coord
-	self.neighbours = []
-	self.chip = null
 
 func equals(other_cell: BoardCell) -> bool:
 	return self.coords == other_cell.coords
