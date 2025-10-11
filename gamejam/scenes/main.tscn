@@ -51,3 +51,4 @@ metadata/_custom_type_script = "uid://bhd4nuiu23e7l"
 stream = ExtResource("8_tipki")
 autoplay = true
 bus = &"BG"
+parameters/looping = true

@@ -1,4 +1,40 @@
-[gd_resource type="AudioBusLayout" format=3 uid="uid://dm7sbe1k7ftmu"]
+[gd_resource type="AudioBusLayout" load_steps=7 format=3 uid="uid://dm7sbe1k7ftmu"]
+
+[sub_resource type="AudioEffectDistortion" id="AudioEffectDistortion_j3pel"]
+resource_name = "Distortion"
+drive = 0.15
+
+[sub_resource type="AudioEffectReverb" id="AudioEffectReverb_j3pel"]
+resource_name = "Reverb"
+predelay_msec = 20.0
+room_size = 0.2
+damping = 0.7
+hipass = 0.2
+wet = 0.15
+
+[sub_resource type="AudioEffectEQ10" id="AudioEffectEQ10_j3pel"]
+resource_name = "EQ10"
+band_db/125_hz = -6.0
+band_db/1000_hz = 2.0
+band_db/2000_hz = 2.0
+band_db/8000_hz = -10.0
+band_db/16000_hz = -12.0
+
+[sub_resource type="AudioEffectChorus" id="AudioEffectChorus_j3pel"]
+resource_name = "Chorus"
+voice_count = 1
+voice/1/rate_hz = 0.6
+voice/1/depth_ms = 0.01
+
+[sub_resource type="AudioEffectHighPassFilter" id="AudioEffectHighPassFilter_j3pel"]
+resource_name = "HighPassFilter"
+cutoff_hz = 50.0
+
+[sub_resource type="AudioEffectPhaser" id="AudioEffectPhaser_j3pel"]
+resource_name = "Phaser"
+range_min_hz = 350.0
+range_max_hz = 400.0
+depth = 0.3
 
 [resource]
 bus/1/name = &"BG"
@@ -7,3 +43,15 @@ bus/1/mute = false
 bus/1/bypass_fx = false
 bus/1/volume_db = -7.0348277
 bus/1/send = &"Master"
+bus/1/effect/0/effect = SubResource("AudioEffectDistortion_j3pel")
+bus/1/effect/0/enabled = true
+bus/1/effect/1/effect = SubResource("AudioEffectReverb_j3pel")
+bus/1/effect/1/enabled = true
+bus/1/effect/2/effect = SubResource("AudioEffectEQ10_j3pel")
+bus/1/effect/2/enabled = true
+bus/1/effect/3/effect = SubResource("AudioEffectChorus_j3pel")
+bus/1/effect/3/enabled = true
+bus/1/effect/4/effect = SubResource("AudioEffectHighPassFilter_j3pel")
+bus/1/effect/4/enabled = true
+bus/1/effect/5/effect = SubResource("AudioEffectPhaser_j3pel")
+bus/1/effect/5/enabled = true
