@@ -1,16 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://dcmnbaonn5a5p"]
+[gd_scene load_steps=3 format=3 uid="uid://dcmnbaonn5a5p"]
 
-[ext_resource type="Texture2D" uid="uid://ccp5lcs8bnojo" path="res://images/Chip.png" id="1_qd6vh"]
 [ext_resource type="Script" uid="uid://dp7rx7emxm1ns" path="res://scripts/chip.gd" id="2_su0yu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sl27e"]
 size = Vector2(64, 64)
 
-[node name="Chip" type="Node"]
+[node name="Chip" type="Node2D"]
 script = ExtResource("2_su0yu")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_qd6vh")
 
 [node name="RigidBody2D" type="RigidBody2D" parent="."]
 

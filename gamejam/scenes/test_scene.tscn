@@ -1,0 +1,44 @@
+[gd_scene load_steps=5 format=3 uid="uid://t7tlbnjh4oe1"]
+
+[ext_resource type="PackedScene" uid="uid://dnyv4j0pm8cul" path="res://scenes/player.tscn" id="1_j8ivh"]
+[ext_resource type="Script" path="res://scenes/area_2d_2.gd" id="1_nd71p"]
+[ext_resource type="PackedScene" uid="uid://dcmnbaonn5a5p" path="res://scenes/chip.tscn" id="2_nd71p"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7ddre"]
+
+[node name="TestScene" type="Node2D"]
+
+[node name="Area2D2" type="Area2D" parent="."]
+position = Vector2(500, 326)
+scale = Vector2(1, 101.949)
+script = ExtResource("1_nd71p")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D2"]
+scale = Vector2(18.045115, 0.22831726)
+shape = SubResource("RectangleShape2D_7ddre")
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2(483, 300)
+scale = Vector2(5, 10)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+scale = Vector2(10, 3)
+shape = SubResource("RectangleShape2D_7ddre")
+
+[node name="Area2D3" type="Area2D" parent="."]
+position = Vector2(978, 322)
+scale = Vector2(1, 5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D3"]
+scale = Vector2(10, 5)
+shape = SubResource("RectangleShape2D_7ddre")
+
+[node name="Player" parent="." instance=ExtResource("1_j8ivh")]
+position = Vector2(674, 335)
+scale = Vector2(6.499965, 26.11461)
+score = 0
+chip_stack = []
+chip_scene = ExtResource("2_nd71p")
+
+[connection signal="input_event" from="Area2D2" to="Area2D2" method="_on_input_event"]
+[connection signal="input_event" from="Area2D" to="Player" method="_on_area_2d_input_event"]
