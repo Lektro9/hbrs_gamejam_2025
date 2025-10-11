@@ -58,6 +58,8 @@ func update() -> void:
 	for cell in get_row(0):
 		_chip_gravity(cell)
 		
+	var clusters = get_clusters()
+	
 	board_updated.emit()
 
 ## Get a single cell by Vector coords
@@ -153,7 +155,7 @@ func get_row(row_num: int) -> Array[BoardCell]:
 	
 	var row_cells: Array[BoardCell] = []
 	
-	for x in BOARD_HEIGHT:
+	for x in BOARD_WIDTH:
 		row_cells.append(get_board_cell_by_coords(x, row_num))
 	
 	return row_cells
@@ -170,7 +172,7 @@ func drop_chip(chip: Chip, col_num: int):
 		if not c.has_chip():
 			c.assign_chip(chip)
 			break
-			
+	
 	update()
 
 
@@ -275,19 +277,43 @@ func get_team_scores() -> Dictionary[Chip.Ownership, int]:
 	}
 
 func debug_print():
-	var out := ""
-	for y in BOARD_HEIGHT: # oben nach unten
+	var out := "\n"
+	out += "╔" + "══".repeat(BOARD_WIDTH) + "╗\n"
+	
+	for y in BOARD_HEIGHT: # von unten nach oben
+		out += "║"
 		for x in range(BOARD_WIDTH):
 			var cell := get_board_cell_by_coords(x, y)
 			if not cell.has_chip():
-				out += ". "
+				out += "· "
 			else:
-				match cell.chip.player_id:
+				var c := cell.chip
+				var char := ""
+				var special_marker := ""
+				
+				match c.player_id:
 					Chip.Ownership.PLAYER_ONE:
-						out += "1 "
+						char = "1"
 					Chip.Ownership.PLAYER_TWO:
-						out += "2 "
+						char = "2"
 					_:
-						out += "N "
-		out += "\n"
+						char = "?"
+				
+				if c.special_type != Chip.Specials.NORMAL:
+					special_marker = "*"
+				
+				if cell.is_in_cluster:
+					out += "[" + char + special_marker + "]"
+				else:
+					out += " " + char + special_marker + " "
+		out += "║\n"
+	
+	out += "╚" + "══".repeat(BOARD_WIDTH) + "╝\n"
+
+	# Optionale Spaltennummern unten für Debug
+	out += "  "
+	for x in range(BOARD_WIDTH):
+		out += str(x) + " "
+	out += "\n"
+
 	print(out)
