@@ -12,7 +12,6 @@ var neighbours: Array[BoardCell] = []
 var chip: ChipStats = null
 
 var is_in_cluster: bool = false
-var is_explored: bool = false
 
 var coords: Vector2i:
 	get:
@@ -34,5 +33,5 @@ func _to_string() -> String:
 func has_chip() -> bool:
 	return chip != null
 
-func assign_chip(c = ChipStats) -> void:
+func assign_chip(c: ChipStats) -> void:
 	self.chip = c

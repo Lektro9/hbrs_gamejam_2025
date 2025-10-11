@@ -44,6 +44,9 @@ func _chip_gravity(cell: BoardCell) -> void:
 	if cell.has_chip():
 		var cell_below = get_board_cell_neighbour(cell.coords, CellDirection.CELL_DOWN)
 		
+		if cell_below == null:
+			return
+		
 		if not cell_below.has_chip():
 			cell_below.chip = cell.chip
 			cell.chip = null
@@ -95,8 +98,10 @@ func get_board_cell_neighbour(coords: Vector2i, direction: CellDirection) -> Boa
 func get_board_cell_neighbours(coords: Vector2i) -> Array[BoardCell]:
 	var cells: Array[BoardCell] = []
 	
-	for direction in CellDirection:
-		cells.append(get_board_cell_neighbour(coords, CellDirection[direction]))
+	for direction in CellDirection.values():
+		var nb = get_board_cell_neighbour(coords, direction)
+		if nb != null:
+			cells.append(nb)
 	
 	return cells
 
@@ -104,48 +109,53 @@ func get_board_cell_neighbours(coords: Vector2i) -> Array[BoardCell]:
 func get_cells_below_board_cell(cell: BoardCell) -> Array[BoardCell]:
 	var cells_below: Array[BoardCell] = []
 	
-	for c in range(cell.y, 0, -1):
-		cells_below.append(c)
+	for y in range(cell.y - 1, -1, -1):
+		cells_below.append(get_board_cell_by_coords(cell.x, y))
 		
 	return cells_below
 	
 # TODO
 ## Returns all neighbours that are in a certain radius around cell
 func get_board_cell_neighbours_in_radius(coords: Vector2i, radius: int = 1) -> Array[BoardCell]:
-	var cells: Dictionary[Vector2i, BoardCell] = {}
-	var cells_array: Array[BoardCell]
+	var out: Array[BoardCell] = []
+	var seen := {}
 	
-	var neighbours = get_board_cell_neighbours(coords)
-	
-	for neighbour in neighbours:
-		cells[neighbour.coords] = neighbour
-	
-	for cell in cells:
-		cells_array.append(cells[cell])
-		
-	return cells_array
+	for dx in range(-radius, radius + 1):
+		for dy in range(-radius, radius + 1):
+			if dx == 0 && dy == 0:
+				continue
+				
+			var p := Vector2i(coords.x + dx, coords.y + dy)
+			var c := get_board_cell(p)
+			
+			if c != null && not seen.has(p):
+				seen[p] = true
+				out.append(c)
+				
+	return out
+
 
 ## Returns all cells in a certain column
 func get_column(col_num: int) -> Array[BoardCell]:
-	assert(col_num < BOARD_WIDTH, 
+	assert(col_num >= 0 and col_num < BOARD_WIDTH, 
 	"Position of column must be smaller than board width, which is %s" % BOARD_WIDTH)
 	
 	var col_cells: Array[BoardCell] = []
 	
-	for i in BOARD_HEIGHT:
-		col_cells.append(get_board_cell_by_coords(col_num, i))
+	for y in BOARD_HEIGHT:
+		col_cells.append(get_board_cell_by_coords(col_num, y))
 	
 	return col_cells
 
 ## Returns all cells in a certain row
 func get_row(row_num: int) -> Array[BoardCell]:
-	assert(row_num < BOARD_HEIGHT, 
+	assert(row_num >= 0 and row_num < BOARD_HEIGHT, 
 	"Position of row must be smaller than board height, which is %s" % BOARD_HEIGHT)
 	
 	var row_cells: Array[BoardCell] = []
 	
-	for i in BOARD_HEIGHT:
-		row_cells.append(get_board_cell_by_coords(i, row_num))
+	for x in BOARD_HEIGHT:
+		row_cells.append(get_board_cell_by_coords(x, row_num))
 	
 	return row_cells
 
@@ -155,50 +165,101 @@ func all_chips_in_play() -> Array[BoardCell]:
 
 ## Drops a chip onto the board
 func drop_chip(chip: ChipStats, col_num: int):
-	var cell = get_board_cell_by_coords(col_num, BOARD_HEIGHT - 1)
-	
-	if (not cell.has_chip()):
-		cell.assign_chip(chip)
-		_chip_gravity(cell)
+	for y in range(BOARD_HEIGHT - 1, -1, -1):
+		var c = get_board_cell_by_coords(col_num, y)
+		
+		if not c.has_chip():
+			c.assign_chip(chip)
+			break
+			
+	update()
+
 
 ## BFS cluster search
-func get_cluster(cell: BoardCell) -> Array[BoardCell]:
-	var cluster: Array[BoardCell] = []
-	var current_cell: BoardCell = cell
-	var root: BoardCell = cell
-	
-	if not current_cell.has_chip():
-		return cluster
-		
-	root.is_explored = true
-	cluster.push_front(root)
-	
-	while not cluster.is_empty():
-		current_cell = cluster.pop_front()
-		
-		if current_cell.has_chip() and not current_cell.is_in_cluster:
-			for 	neighbour: BoardCell in get_board_cell_neighbours(current_cell.coords).filter(func(c: BoardCell): return c.has_chip()):
-				if not neighbour.is_explored:
-					neighbour.is_explored = true
-					cluster.push_front(neighbour)
-	
-	for c in cluster:
-		if cluster.size() > CLUSTER_MIN_SIZE:
-			c.is_in_cluster = true
-		else:
-			c.is_in_cluster = false
-		
-		c.is_explored = false
-	
-	return cluster
+func get_cluster(start: BoardCell) -> Array[BoardCell]:
+	var result: Array[BoardCell] = []
+	if start == null or not start.has_chip():
+		return result
+
+	var owner := start.chip.ownership
+	if owner == ChipStats.Ownership.NEUTRAL:
+		return result  # Neutrale zählen nicht für Spieler-Cluster
+
+	var queue: Array[BoardCell] = [start]
+	var visited := {}
+
+	while not queue.is_empty():
+		var cur: BoardCell = queue.pop_front()
+		if visited.has(cur.coords):
+			continue
+		visited[cur.coords] = true
+		result.append(cur)
+
+		for nb in get_board_cell_neighbours(cur.coords):
+			if nb.has_chip() and not visited.has(nb.coords) and nb.chip.ownership == owner:
+				queue.append(nb)
+
+	var is_cluster := result.size() >= CLUSTER_MIN_SIZE
+	for c in result:
+		c.is_in_cluster = is_cluster
+	return result
+
 
 ## Returns all clusters on the board
-func get_clusters():
-	var cells_with_chips = all_chips_in_play()
-	var clusters: Dictionary[int, Array]
-	
-	for i in range(0, cells_with_chips.size(), 1):
-		var cell = cells_with_chips[i]
-		
-		if not cell.is_in_cluster:
-			clusters[i] = get_cluster(cell)
+func get_clusters() -> Array[Array]:
+	var clusters: Array[Array] = []
+	var visited := {}
+
+	for cell in all_chips_in_play():
+		if visited.has(cell.coords):
+			continue
+		var cl = get_cluster(cell)
+		for c in cl:
+			visited[c.coords] = true
+		if cl.size() >= CLUSTER_MIN_SIZE:
+			clusters.append(cl)
+	return clusters
+
+func score_for_current_board() -> int:
+	var total := 0
+	for cl in get_clusters():
+		total += cl.size()
+	return total
+	#
+
+# Liefert alle gültigen Cluster (ab Min-Size) gruppiert nach Team
+func get_team_clusters() -> Dictionary:
+	var clusters_by_team := {
+		ChipStats.Ownership.PLAYER_ONE: [],
+		ChipStats.Ownership.PLAYER_TWO: []
+	}
+	var visited := {}
+
+	for cell in all_chips_in_play():
+		if visited.has(cell.coords):
+			continue
+		var cl := get_cluster(cell)
+		for c in cl:
+			visited[c.coords] = true
+		if cl.size() >= CLUSTER_MIN_SIZE and cell.chip != null:
+			match cell.chip.ownership:
+				ChipStats.Ownership.PLAYER_ONE:
+					clusters_by_team[ChipStats.Ownership.PLAYER_ONE].append(cl)
+				ChipStats.Ownership.PLAYER_TWO:
+					clusters_by_team[ChipStats.Ownership.PLAYER_TWO].append(cl)
+				_:
+					pass
+	return clusters_by_team
+
+func get_team_scores() -> Dictionary:
+	var clusters := get_team_clusters()
+	var s1 := 0
+	for cl in clusters[ChipStats.Ownership.PLAYER_ONE]:
+		s1 += cl.size()
+	var s2 := 0
+	for cl in clusters[ChipStats.Ownership.PLAYER_TWO]:
+		s2 += cl.size()
+	return {
+		ChipStats.Ownership.PLAYER_ONE: s1,
+		ChipStats.Ownership.PLAYER_TWO: s2
+	}
