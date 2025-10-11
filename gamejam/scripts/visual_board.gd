@@ -4,11 +4,14 @@ extends Node2D
 @export var red_texture: Texture2D
 @export var blue_texture: Texture2D
 
-@export var grid_size: Vector2i = Vector2i(GameBoard.BOARD_WIDTH,GameBoard.BOARD_HEIGHT)  # 7 columns × 6 rows
+var grid_size: Vector2i
 @export var cell_size: Vector2 = Vector2(128, 128)
 @onready var grid_container: Node2D = $GridContainer
 @onready var empty_grid_container: Node2D = $GridContainer/EmptyGridContainer
 @onready var filled_grid_container: Node2D = $GridContainer/FilledGridContainer
+const DEFAULT_PLAYER_1_CHIP = preload("uid://by11wc80p4n7w")
+const COLUMN_AREA = preload("uid://xtv2ebfyw4bp")
+@onready var column_container: Node2D = $GridContainer/ColumnContainer
 
 # 2D array to store the state (0 = empty, 1 = red, 2 = yellow)
 var filled_board := []
@@ -25,9 +28,7 @@ func _init_board():
 			filled_board[x].append(0)  # all empty at start
 
 func _ready():
-	_init_board()
-	_draw_empty_board()
-	_draw_board()
+	pass
 
 func _draw_empty_board():
 	# Clear old sprites if needed
@@ -56,9 +57,15 @@ func _draw_board():
 	for y in range(grid_size.y):
 		for x in range(grid_size.x):
 			var sprite = Sprite2D.new()
-			sprite.texture = _get_texture_for_cell(filled_board[x][y])
+			var chip: Chip = GameManager.game_board.board_cells.get(Vector2i(x, y)).chip
+			if chip != null:
+				sprite.texture = _get_texture_for_cell(chip.player_id)
+			else:
+				sprite.texture = _get_texture_for_cell(0)
+				
+				
 			sprite.position = origin + Vector2(x, grid_size.y - 1 - y) * cell_size
-			grid_container.add_child(sprite)
+			filled_grid_container.add_child(sprite)
 
 func _get_texture_for_cell(value: int) -> Texture2D:
 	match value:
@@ -69,14 +76,31 @@ func _get_texture_for_cell(value: int) -> Texture2D:
 		_:
 			return empty_texture
 
-# Example: drop a disc in a column
-func drop_disc(column: int, player: int):
-	for y in range(grid_size.y):
-		if filled_board[column][y] == 0:
-			filled_board[column][y] = player
-			_draw_board()
-			return
+func drop_chip(column: int):
+	GameManager.drop_chip(DEFAULT_PLAYER_1_CHIP, column)
+	GameManager.game_board.debug_print()
+	_draw_board()
 
+func start_game():
+	GameManager.start_game()
+	grid_size = Vector2i(GameManager.game_board.BOARD_WIDTH, GameManager.game_board.BOARD_HEIGHT)
+	spawn_column_areas()
+	for column in column_container.get_children():
+		if column.has_signal("column_clicked"):
+			column.connect("column_clicked", drop_chip)
+		
+	_init_board()
+	_draw_empty_board()
+	_draw_board()
 
-func _on_drop_chip_btn_pressed() -> void:
-	drop_disc(1, 1)
+func spawn_column_areas():
+	for x in grid_size.x:
+		var col_area: ColumnArea = COLUMN_AREA.instantiate()
+		col_area.column_index = x
+		#TODO refactor
+		var total_size = Vector2(grid_size.x - 1, grid_size.y - 1) * cell_size
+		var origin = -total_size * 0.5  # center the grid
+		#TODO end
+		col_area.position = origin + Vector2(x, grid_size.y/2.0 - 0.5) * cell_size
+		col_area.column_size = Vector2(cell_size.x, cell_size.y * grid_size.y)
+		column_container.add_child(col_area)

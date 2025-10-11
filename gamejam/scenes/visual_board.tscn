@@ -19,14 +19,17 @@ offset_left = 84.0
 offset_top = 630.0
 offset_right = 166.0
 offset_bottom = 661.0
-text = "drop chip"
+text = "start"
 
 [node name="GridContainer" type="Node2D" parent="."]
-position = Vector2(636, 359)
+position = Vector2(563, 273)
+scale = Vector2(0.5, 0.5)
 
 [node name="EmptyGridContainer" type="Node2D" parent="GridContainer"]
 
 [node name="FilledGridContainer" type="Node2D" parent="GridContainer"]
+
+[node name="ColumnContainer" type="Node2D" parent="GridContainer"]
 
 [node name="Playgrid" type="Sprite2D" parent="."]
 visible = false
@@ -34,4 +37,4 @@ position = Vector2(611, 354)
 scale = Vector2(3.279295, 3.279295)
 texture = ExtResource("4_ybonp")
 
-[connection signal="pressed" from="CanvasLayer/DropChipBtn" to="." method="_on_drop_chip_btn_pressed"]
+[connection signal="pressed" from="CanvasLayer/DropChipBtn" to="." method="start_game"]

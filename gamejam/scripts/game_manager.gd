@@ -10,7 +10,6 @@ var player_1: Player
 var player_2: Player
 var game_board: GameBoardData
 var does_player_one_play = true # true for player 1, false for player 2
-var testColor = Color(0.955, 0.1, 0.35, 1.0)
 
 func _ready() -> void:
 	if not OS.is_debug_build():
@@ -35,7 +34,7 @@ func start_game():
 	#player_1.spawn_new_chip()
 	#game_board.drop_chip(player_1.get_current_chip().stats, 0)
 
-	game_board = GameBoardData.new(8, 8)
+	game_board = GameBoardData.new(4, 8)
 	does_player_one_play = true
 	print("new game")
 
@@ -43,7 +42,7 @@ func drop_chip(curr_chip: Chip, col: int):
 	state_chart.send_event("dropping_chip")
 	
 	game_board.drop_chip(curr_chip, col)
-	game_board.update()
+	#game_board.update()
 	var scores := game_board.get_team_scores()
 	print(scores)
 	switch_player()

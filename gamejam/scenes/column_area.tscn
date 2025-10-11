@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://xtv2ebfyw4bp"]
+
+[ext_resource type="Script" uid="uid://7lq5kk1scrxh" path="res://scripts/column_area.gd" id="1_b7brj"]
+[ext_resource type="Texture2D" uid="uid://l2v0ya1xltpt" path="res://images/hover_effect.png" id="2_p25je"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_geckt"]
+size = Vector2(20, 400)
+
+[node name="ColumnArea" type="Area2D"]
+script = ExtResource("1_b7brj")
+column_size = Vector2(100, 600)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_geckt")
+
+[node name="HoverEffect" type="Sprite2D" parent="CollisionShape2D"]
+visible = false
+scale = Vector2(0.36718744, 3.0546877)
+texture = ExtResource("2_p25je")
