@@ -97,9 +97,9 @@ delay_in_seconds = "2.0"
 [node name="RestartPrompt" type="Node" parent="StateChart/Root"]
 script = ExtResource("3_rtub8")
 
-[node name="ToPlayerTurn" type="Node" parent="StateChart/Root/RestartPrompt"]
+[node name="ToInit" type="Node" parent="StateChart/Root/RestartPrompt"]
 script = ExtResource("5_rtub8")
-to = NodePath("../../PlayerTurn")
+to = NodePath("../../Init")
 event = &"restart_game"
 delay_in_seconds = "0.0"
 
@@ -116,3 +116,5 @@ offset_right = -177.0
 offset_bottom = -55.0
 grow_horizontal = 0
 initial_node_to_watch = NodePath("../../StateChart")
+
+[connection signal="state_entered" from="StateChart/Root/Init" to="." method="_on_init_state_entered"]

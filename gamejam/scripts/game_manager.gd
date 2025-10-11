@@ -1,4 +1,7 @@
 extends Node2D
+
+signal initialize_game_board
+
 @onready var state_chart_debugger: MarginContainer = $StateChartDebugger
 @onready var state_chart: StateChart = $StateChart
 @onready var debug_ui: CanvasLayer = $DebugUi
@@ -29,3 +32,6 @@ func restart_game():
 
 func set_is_game_won_expression(is_game_won: bool):
 	state_chart.set_expression_property("is_game_won", is_game_won)
+
+func _on_init_state_entered() -> void:
+	initialize_game_board.emit()
