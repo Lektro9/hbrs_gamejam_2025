@@ -27,5 +27,5 @@ func set_player_nr(nr: int):
 		is_player_one = false
 	
 
-func drop_chip(col, currChip):
-	pass
+func drop_chip(chip: ChipStats, col: int):
+	GameManager.game_board.drop_chip(chip, col)

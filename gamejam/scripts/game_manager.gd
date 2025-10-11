@@ -9,6 +9,8 @@ signal initialize_game_board
 var player_1: Player
 var player_2: Player
 
+var game_board: GameBoardData
+
 var is_player_one = true # true for player 1, false for player 2
 var testColor = Color(0.955, 0.1, 0.35, 1.0)
 
@@ -23,6 +25,8 @@ func _ready() -> void:
 	player_2 = player_scene.instantiate()
 	player_1.set_player_nr(1)
 	player_2.set_player_nr(2)
+	
+	game_board = GameBoardData.new(8, 8)
 
 func togglePlayer(): is_player_one != is_player_one
 
