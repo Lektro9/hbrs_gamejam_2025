@@ -3,8 +3,8 @@ extends Node2D
 
 signal board_updated
 
-@export var BOARD_WIDTH: int = 8
-@export var BOARD_HEIGHT: int = 8
+var BOARD_WIDTH: int
+var BOARD_HEIGHT: int
 @export var CLUSTER_MIN_SIZE: int = 4
 
 enum CellDirection {
@@ -20,10 +20,10 @@ enum CellDirection {
 
 var board_cells: Dictionary[Vector2i, BoardCell]
 
-func _ready() -> void:
-	GameManager.initialize_game_board.connect(_init_game_board)
-			
-func _init_game_board():
+func _init(height, width):
+	BOARD_HEIGHT = height
+	BOARD_WIDTH = width
+	
 	board_cells = {}
 
 	for i in BOARD_WIDTH:
