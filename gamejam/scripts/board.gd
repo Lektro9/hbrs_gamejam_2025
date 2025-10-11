@@ -276,7 +276,7 @@ func get_team_scores() -> Dictionary[Chip.Ownership, int]:
 
 func debug_print():
 	var out := ""
-	for y in range(BOARD_HEIGHT - 1, -1, -1): # oben nach unten
+	for y in BOARD_HEIGHT: # oben nach unten
 		for x in range(BOARD_WIDTH):
 			var cell := get_board_cell_by_coords(x, y)
 			if not cell.has_chip():
