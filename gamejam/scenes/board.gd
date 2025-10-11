@@ -1,3 +1,5 @@
+extends Node2D
+
 @export var BOARD_WIDTH: int
 @export var BOARD_HEIGHT: int
 
@@ -75,6 +77,14 @@ func get_board_cell_neighbours(coords: Vector2i) -> Array[BoardCell]:
 	
 	return cells
 	
+func get_cells_below_board_cell(cell: BoardCell) -> Array[BoardCell]:
+	var cells_below: Array[BoardCell] = []
+	
+	for c in range(cell.y, 0, -1):
+		cells_below.append(c)
+		
+	return cells_below
+	
 # TODO
 func get_board_cell_neighbours_in_radius(coords: Vector2i, radius: int = 1) -> Array[BoardCell]:
 	var cells: Dictionary[Vector2i, BoardCell] = {}
@@ -106,7 +116,15 @@ func get_column_free_spot(col_num: int):
 	assert(col_num < BOARD_WIDTH, 
 	"Position of column must be smaller than board width, which is %s" % BOARD_WIDTH)
 	
+	pass
 	
+func chip_gravity(cell: BoardCell):
+	if cell.has_chip():
+		var cell_below = get_board_cell_neighbour(cell.coords, CellDirection.CELL_DOWN)
+		
+		if not cell_below.has_chip():
+			cell_below.chip = cell.chip
+			cell.chip = null
 	
 	pass
 
