@@ -49,5 +49,5 @@ metadata/_custom_type_script = "uid://bhd4nuiu23e7l"
 
 [node name="GameBoard" parent="." instance=ExtResource("3_tipki")]
 unique_name_in_owner = true
-BOARD_WIDTH = 8
-BOARD_HEIGHT = 8
+BOARD_WIDTH = 0
+BOARD_HEIGHT = 0

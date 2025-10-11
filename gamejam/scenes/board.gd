@@ -47,6 +47,12 @@ func _chip_gravity(cell: BoardCell) -> void:
 			cell.chip = null
 			_chip_gravity(cell_below)
 
+func get_height():
+	return BOARD_HEIGHT
+	
+func get_width():
+	return BOARD_WIDTH
+
 # TODO
 func update() -> void:
 	# Chip gravity beginning at the bottom

@@ -18,5 +18,5 @@ tile_set = SubResource("TileSet_dxjtj")
 collision_enabled = false
 navigation_enabled = false
 script = ExtResource("2_nglv8")
-coords_x = 8
-coords_y = 8
+BOARD_WIDTH = 8
+BOARD_HEIGHT = 8
