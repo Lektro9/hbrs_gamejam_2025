@@ -1,5 +1,3 @@
-extends TileMapLayer
-
 @export var BOARD_WIDTH: int
 @export var BOARD_HEIGHT: int
 
@@ -23,10 +21,7 @@ func _init_game_board():
 	board_cells = {}
 
 	for i in BOARD_WIDTH:
-		for j in BOARD_HEIGHT:
-			# Instantiate tile map cells
-			set_cell(Vector2i(i, j), 0, Vector2i(0, 0))
-			
+		for j in BOARD_HEIGHT:	
 			# Set cell properties
 			var cell = BoardCell.new(i, j)
 			
