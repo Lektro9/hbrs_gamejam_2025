@@ -14,7 +14,7 @@ enum CellDirection {
 	CELL_UP_LEFT
 }
 
-var board_cells: Dictionary
+var board_cells: Dictionary[Vector2i, BoardCell]
 
 func _ready() -> void:
 	GameManager.initialize_game_board.connect(_init_game_board)
@@ -32,8 +32,20 @@ func _init_game_board():
 			
 			board_cells[Vector2i(i, j)] = cell
 			
+	for board_cell in board_cells:
+		board_cells[board_cell].neighbours = get_board_cell_neighbours(board_cell).filter(func(bc: BoardCell): return bc != null)
+		print(board_cells[board_cell])
+		for cell_neighbour in board_cells[board_cell].neighbours:
+			print("\t -> %s" % cell_neighbour)
+
+func update():
+	pass
+
 func get_board_cell(coords: Vector2i) -> BoardCell:
-	return board_cells[coords]
+	if board_cells.has(coords):
+		return board_cells[coords]
+		
+	return null
 	
 func get_board_cell_by_coords(x: int, y: int) -> BoardCell:
 	return get_board_cell(Vector2i(x, y))
@@ -63,7 +75,7 @@ func get_board_cell_neighbours(coords: Vector2i) -> Array[BoardCell]:
 	var cells: Array[BoardCell] = []
 	
 	for direction in CellDirection:
-		cells.append(get_board_cell_neighbour(coords, direction))
+		cells.append(get_board_cell_neighbour(coords, CellDirection[direction]))
 	
 	return cells
 	
