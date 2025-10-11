@@ -164,7 +164,7 @@ func all_chips_in_play() -> Array[BoardCell]:
 	return board_cells.values().filter(func(c: BoardCell): return c.has_chip())
 
 ## Drops a chip onto the board
-func drop_chip(chip: ChipStats, col_num: int):
+func drop_chip(chip: Chip, col_num: int):
 	for y in range(BOARD_HEIGHT - 1, -1, -1):
 		var c = get_board_cell_by_coords(col_num, y)
 		
@@ -181,8 +181,8 @@ func get_cluster(start: BoardCell) -> Array[BoardCell]:
 	if start == null or not start.has_chip():
 		return result
 
-	var owner := start.chip.ownership
-	if owner == ChipStats.Ownership.NEUTRAL:
+	var owner = start.chip.player_id
+	if owner == Chip.Ownership.NEUTRAL:
 		return result  # Neutrale zählen nicht für Spieler-Cluster
 
 	var queue: Array[BoardCell] = [start]
@@ -196,7 +196,7 @@ func get_cluster(start: BoardCell) -> Array[BoardCell]:
 		result.append(cur)
 
 		for nb in get_board_cell_neighbours(cur.coords):
-			if nb.has_chip() and not visited.has(nb.coords) and nb.chip.ownership == owner:
+			if nb.has_chip() and not visited.has(nb.coords) and nb.chip.player_id == owner:
 				queue.append(nb)
 
 	var is_cluster := result.size() >= CLUSTER_MIN_SIZE
@@ -231,8 +231,8 @@ func score_for_current_board() -> int:
 ## Returns cluster with min_size divided by team 
 func get_team_clusters() -> Dictionary:
 	var clusters_by_team := {
-		ChipStats.Ownership.PLAYER_ONE: [],
-		ChipStats.Ownership.PLAYER_TWO: []
+		Chip.Ownership.PLAYER_ONE: [],
+		Chip.Ownership.PLAYER_TWO: []
 	}
 	
 	var visited := {}
@@ -247,30 +247,30 @@ func get_team_clusters() -> Dictionary:
 			visited[c.coords] = true
 		
 		if cluster.size() >= CLUSTER_MIN_SIZE and cell.chip != null:
-			match cell.chip.ownership:
-				ChipStats.Ownership.PLAYER_ONE:
-					clusters_by_team[ChipStats.Ownership.PLAYER_ONE].append(cluster)
-				ChipStats.Ownership.PLAYER_TWO:
-					clusters_by_team[ChipStats.Ownership.PLAYER_TWO].append(cluster)
+			match cell.chip.player_id:
+				Chip.Ownership.PLAYER_ONE:
+					clusters_by_team[Chip.Ownership.PLAYER_ONE].append(cluster)
+				Chip.Ownership.PLAYER_TWO:
+					clusters_by_team[Chip.Ownership.PLAYER_TWO].append(cluster)
 				_:
 					pass
 	
 	return clusters_by_team
 
 
-func get_team_scores() -> Dictionary[ChipStats.Ownership, int]:
+func get_team_scores() -> Dictionary[Chip.Ownership, int]:
 	var clusters := get_team_clusters()
 	var score1 := 0
 	
-	for cl in clusters[ChipStats.Ownership.PLAYER_ONE]:
+	for cl in clusters[Chip.Ownership.PLAYER_ONE]:
 		score1 += cl.size()
 		
 	var score2 := 0
 	
-	for cluster in clusters[ChipStats.Ownership.PLAYER_TWO]:
+	for cluster in clusters[Chip.Ownership.PLAYER_TWO]:
 		score2 += cluster.size()
 		
 	return {
-		ChipStats.Ownership.PLAYER_ONE: score1,
-		ChipStats.Ownership.PLAYER_TWO: score2
+		Chip.Ownership.PLAYER_ONE: score1,
+		Chip.Ownership.PLAYER_TWO: score2
 	}

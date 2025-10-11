@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Chip" load_steps=3 format=3 uid="uid://d067buq0wrgcx"]
+
+[ext_resource type="Texture2D" uid="uid://ehpyxt8bfrjb" path="res://images/red_chip.png" id="1_pur34"]
+[ext_resource type="Script" uid="uid://dp7rx7emxm1ns" path="res://scripts/chip.gd" id="2_gha60"]
+
+[resource]
+script = ExtResource("2_gha60")
+icon = ExtResource("1_pur34")
+player_id = 2
+metadata/_custom_type_script = "uid://dp7rx7emxm1ns"

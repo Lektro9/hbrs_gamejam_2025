@@ -1,0 +1,120 @@
+[gd_scene load_steps=9 format=3 uid="uid://k0k5a4xogqvf"]
+
+[ext_resource type="Script" uid="uid://dd04cbe8whcng" path="res://scripts/game_manager.gd" id="1_3dus2"]
+[ext_resource type="Script" uid="uid://couw105c3bde4" path="res://addons/godot_state_charts/state_chart.gd" id="1_4dhvd"]
+[ext_resource type="Script" uid="uid://jk2jm1g6q853" path="res://addons/godot_state_charts/compound_state.gd" id="2_3dus2"]
+[ext_resource type="Script" uid="uid://cytafq8i1y8qm" path="res://addons/godot_state_charts/atomic_state.gd" id="3_rtub8"]
+[ext_resource type="Script" uid="uid://cf1nsco3w0mf6" path="res://addons/godot_state_charts/transition.gd" id="5_rtub8"]
+[ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="6_jg7te"]
+[ext_resource type="Script" uid="uid://le5w1cm0ul8p" path="res://addons/godot_state_charts/expression_guard.gd" id="6_mx40s"]
+
+[sub_resource type="Resource" id="Resource_2uts2"]
+script = ExtResource("6_mx40s")
+expression = "is_game_won == true"
+metadata/_custom_type_script = "uid://le5w1cm0ul8p"
+
+[node name="GameManager" type="Node2D"]
+script = ExtResource("1_3dus2")
+
+[node name="StateChart" type="Node" parent="."]
+script = ExtResource("1_4dhvd")
+metadata/_custom_type_script = "uid://couw105c3bde4"
+
+[node name="Root" type="Node" parent="StateChart"]
+script = ExtResource("2_3dus2")
+initial_state = NodePath("Init")
+
+[node name="Init" type="Node" parent="StateChart/Root"]
+script = ExtResource("3_rtub8")
+
+[node name="ToPlayerTurn" type="Node" parent="StateChart/Root/Init"]
+script = ExtResource("5_rtub8")
+to = NodePath("../../PlayerTurn")
+event = &"start_game"
+delay_in_seconds = "0.0"
+
+[node name="PlayerTurn" type="Node" parent="StateChart/Root"]
+script = ExtResource("3_rtub8")
+
+[node name="ToDropPiece" type="Node" parent="StateChart/Root/PlayerTurn"]
+script = ExtResource("5_rtub8")
+to = NodePath("../../DropChip")
+event = &"dropping_chip"
+delay_in_seconds = "0.0"
+
+[node name="DropChip" type="Node" parent="StateChart/Root"]
+script = ExtResource("3_rtub8")
+
+[node name="ToCheckWin" type="Node" parent="StateChart/Root/DropChip"]
+script = ExtResource("5_rtub8")
+to = NodePath("../../CheckWin")
+delay_in_seconds = "2.0"
+
+[node name="CheckWin" type="Node" parent="StateChart/Root"]
+script = ExtResource("3_rtub8")
+
+[node name="ToWin" type="Node" parent="StateChart/Root/CheckWin"]
+script = ExtResource("5_rtub8")
+to = NodePath("../../Win")
+guard = SubResource("Resource_2uts2")
+delay_in_seconds = "0.0"
+
+[node name="ToDraw" type="Node" parent="StateChart/Root/CheckWin"]
+script = ExtResource("5_rtub8")
+to = NodePath("../../Draw")
+event = &"draw_game"
+delay_in_seconds = "0.0"
+
+[node name="ToSwitchPlayer" type="Node" parent="StateChart/Root/CheckWin"]
+script = ExtResource("5_rtub8")
+to = NodePath("../../SwitchPlayer")
+delay_in_seconds = "2.0"
+
+[node name="SwitchPlayer" type="Node" parent="StateChart/Root"]
+script = ExtResource("3_rtub8")
+
+[node name="ToPlayerTurn" type="Node" parent="StateChart/Root/SwitchPlayer"]
+script = ExtResource("5_rtub8")
+to = NodePath("../../PlayerTurn")
+delay_in_seconds = "2.0"
+
+[node name="Win" type="Node" parent="StateChart/Root"]
+script = ExtResource("3_rtub8")
+
+[node name="ToRestartPrompt" type="Node" parent="StateChart/Root/Win"]
+script = ExtResource("5_rtub8")
+to = NodePath("../../RestartPrompt")
+delay_in_seconds = "2.0"
+
+[node name="Draw" type="Node" parent="StateChart/Root"]
+script = ExtResource("3_rtub8")
+
+[node name="ToRestartPrompt" type="Node" parent="StateChart/Root/Draw"]
+script = ExtResource("5_rtub8")
+to = NodePath("../../RestartPrompt")
+delay_in_seconds = "2.0"
+
+[node name="RestartPrompt" type="Node" parent="StateChart/Root"]
+script = ExtResource("3_rtub8")
+
+[node name="ToInit" type="Node" parent="StateChart/Root/RestartPrompt"]
+script = ExtResource("5_rtub8")
+to = NodePath("../../Init")
+event = &"restart_game"
+delay_in_seconds = "0.0"
+
+[node name="DebugUi" type="CanvasLayer" parent="."]
+
+[node name="StateChartDebugger" parent="DebugUi" instance=ExtResource("6_jg7te")]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -623.0
+offset_top = -341.0
+offset_right = -177.0
+offset_bottom = -55.0
+grow_horizontal = 0
+initial_node_to_watch = NodePath("../../StateChart")
+
+[connection signal="state_entered" from="StateChart/Root/Init" to="." method="_on_init_state_entered"]

@@ -15,7 +15,7 @@ func _init():
 func init(p_player_id: int):
 	player_id = p_player_id as PlayerId
 
-func spawn_new_chip() -> ChipStats:
+func spawn_new_chip() -> Chip:
 	var chip = chip_scene.instantiate()
 	chip.initialize(player_id)
 	return chip.stats
@@ -24,11 +24,11 @@ func get_current_chip() -> Chip:
 	return current_chip
 	
 func remove_chip():
-	remove_child(current_chip)
+	current_chip = null
 	
 func set_player_nr(nr: int):
 	player_id = PlayerId.get(nr);
 	
 
-func drop_chip(chip: ChipStats, col: int):
+func drop_chip(chip: Chip, col: int):
 	GameManager.drop_chip(chip, col)
