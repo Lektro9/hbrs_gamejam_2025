@@ -21,8 +21,8 @@ enum CellDirection {
 var board_cells: Dictionary[Vector2i, BoardCell]
 
 func _init(height, width):
-	BOARD_HEIGHT = height
 	BOARD_WIDTH = width
+	BOARD_HEIGHT = height
 	
 	board_cells = {}
 
@@ -39,6 +39,7 @@ func _init(height, width):
 		for cell_neighbour in board_cells[board_cell].neighbours:
 			print("\t -> %s" % cell_neighbour)
 
+## Makes a chip "fall down" in the data layer
 func _chip_gravity(cell: BoardCell) -> void:
 	if cell.has_chip():
 		var cell_below = get_board_cell_neighbour(cell.coords, CellDirection.CELL_DOWN)
@@ -48,12 +49,8 @@ func _chip_gravity(cell: BoardCell) -> void:
 			cell.chip = null
 			_chip_gravity(cell_below)
 
-func get_height():
-	return BOARD_HEIGHT
-	
-func get_width():
-	return BOARD_WIDTH
-
+## Updates the board status
+## Makes all chips fall down
 func update() -> void:
 	# Chip gravity beginning at the bottom
 	for cell in get_row(0):
@@ -61,15 +58,18 @@ func update() -> void:
 		
 	board_updated.emit()
 
+## Get a single cell by Vector coords
 func get_board_cell(coords: Vector2i) -> BoardCell:
 	if board_cells.has(coords):
 		return board_cells[coords]
 		
 	return null
-	
+
+## Get a single cell by integer coords
 func get_board_cell_by_coords(x: int, y: int) -> BoardCell:
 	return get_board_cell(Vector2i(x, y))
-	
+
+## Returns the neighbouring cell in a single direction (even diagonally)
 func get_board_cell_neighbour(coords: Vector2i, direction: CellDirection) -> BoardCell:
 	match direction:
 		CellDirection.CELL_UP:
@@ -91,6 +91,7 @@ func get_board_cell_neighbour(coords: Vector2i, direction: CellDirection) -> Boa
 			
 	return null
 
+## Returns all neighbours of a single cell
 func get_board_cell_neighbours(coords: Vector2i) -> Array[BoardCell]:
 	var cells: Array[BoardCell] = []
 	
@@ -98,7 +99,8 @@ func get_board_cell_neighbours(coords: Vector2i) -> Array[BoardCell]:
 		cells.append(get_board_cell_neighbour(coords, CellDirection[direction]))
 	
 	return cells
-	
+
+## Returns all cells below cell
 func get_cells_below_board_cell(cell: BoardCell) -> Array[BoardCell]:
 	var cells_below: Array[BoardCell] = []
 	
@@ -108,6 +110,7 @@ func get_cells_below_board_cell(cell: BoardCell) -> Array[BoardCell]:
 	return cells_below
 	
 # TODO
+## Returns all neighbours that are in a certain radius around cell
 func get_board_cell_neighbours_in_radius(coords: Vector2i, radius: int = 1) -> Array[BoardCell]:
 	var cells: Dictionary[Vector2i, BoardCell] = {}
 	var cells_array: Array[BoardCell]
@@ -122,6 +125,7 @@ func get_board_cell_neighbours_in_radius(coords: Vector2i, radius: int = 1) -> A
 		
 	return cells_array
 
+## Returns all cells in a certain column
 func get_column(col_num: int) -> Array[BoardCell]:
 	assert(col_num < BOARD_WIDTH, 
 	"Position of column must be smaller than board width, which is %s" % BOARD_WIDTH)
@@ -132,7 +136,8 @@ func get_column(col_num: int) -> Array[BoardCell]:
 		col_cells.append(get_board_cell_by_coords(col_num, i))
 	
 	return col_cells
-	
+
+## Returns all cells in a certain row
 func get_row(row_num: int) -> Array[BoardCell]:
 	assert(row_num < BOARD_HEIGHT, 
 	"Position of row must be smaller than board height, which is %s" % BOARD_HEIGHT)
@@ -144,9 +149,11 @@ func get_row(row_num: int) -> Array[BoardCell]:
 	
 	return row_cells
 
+## Returns all chips on the board
 func all_chips_in_play() -> Array[BoardCell]:
 	return board_cells.values().filter(func(c: BoardCell): return c.has_chip())
-	
+
+## Drops a chip onto the board
 func drop_chip(chip: ChipStats, col_num: int):
 	var cell = get_board_cell_by_coords(col_num, BOARD_HEIGHT - 1)
 	
@@ -154,7 +161,7 @@ func drop_chip(chip: ChipStats, col_num: int):
 		cell.assign_chip(chip)
 		_chip_gravity(cell)
 
-# BFS cluster search
+## BFS cluster search
 func get_cluster(cell: BoardCell) -> Array[BoardCell]:
 	var cluster: Array[BoardCell] = []
 	var current_cell: BoardCell = cell
@@ -185,10 +192,13 @@ func get_cluster(cell: BoardCell) -> Array[BoardCell]:
 	
 	return cluster
 
+## Returns all clusters on the board
 func get_clusters():
 	var cells_with_chips = all_chips_in_play()
+	var clusters: Dictionary[int, Array]
 	
-	#for cell in cells_with_chips:
+	for i in range(0, cells_with_chips.size(), 1):
+		var cell = cells_with_chips[i]
 		
-	
-	pass
+		if not cell.is_in_cluster:
+			clusters[i] = get_cluster(cell)
