@@ -9,6 +9,8 @@ var y: int
 # Holds all neighbours
 var neighbours: Array[BoardCell]
 
+var chip: ChipStats
+
 var coords: Vector2i:
 	get:
 		return Vector2i(x, y)
@@ -20,9 +22,13 @@ func _init(x_coord: int, y_coord: int) -> void:
 	self.x = x_coord
 	self.y = y_coord
 	self.neighbours = []
+	self.chip = null
 
 func equals(other_cell: BoardCell) -> bool:
 	return self.coords == other_cell.coords
 
 func _to_string() -> String:
 	return "(%s,%s)" % [x, y]
+
+func has_chip() -> bool:
+	return chip != null

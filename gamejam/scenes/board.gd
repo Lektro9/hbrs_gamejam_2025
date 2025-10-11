@@ -111,5 +111,13 @@ func get_column_free_spot(col_num: int):
 	assert(col_num < BOARD_WIDTH, 
 	"Position of column must be smaller than board width, which is %s" % BOARD_WIDTH)
 	
-	pass
 	
+	
+	pass
+
+func all_chips_in_play() -> Array[BoardCell]:
+	return board_cells.values().filter(func(c: BoardCell): return c.has_chip())
+	
+	
+func drop_chip():
+	pass
