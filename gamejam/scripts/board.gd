@@ -60,7 +60,7 @@ func update_board_state() -> void:
 		for x in BOARD_WIDTH:
 			_chip_gravity(get_board_cell_by_coords(x, y))
 		
-	# get_clusters()
+	get_clusters()
 	
 	debug_print()
 	
