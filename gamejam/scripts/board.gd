@@ -53,12 +53,13 @@ func _chip_gravity(cell: BoardCell) -> void:
 
 ## Updates the board status
 ## Makes all chips fall down
-func update() -> void:
+func update_board_state() -> void:
 	# Chip gravity beginning at the bottom
-	for cell in get_row(0):
-		_chip_gravity(cell)
+	for r in BOARD_HEIGHT:
+		for cell in get_row(r):
+			_chip_gravity(cell)
 		
-	var clusters = get_clusters()
+	get_clusters()
 	
 	board_updated.emit()
 
@@ -173,7 +174,7 @@ func drop_chip(chip: Chip, col_num: int):
 			c.assign_chip(chip)
 			break
 	
-	update()
+	update_board_state()
 
 
 ## BFS cluster search
@@ -182,8 +183,8 @@ func get_cluster(start: BoardCell) -> Array[BoardCell]:
 	if start == null or not start.has_chip():
 		return result
 
-	var owner = start.chip.player_id
-	if owner == Chip.Ownership.NEUTRAL:
+	var chip_owner = start.chip.player_id
+	if chip_owner == Chip.Ownership.NEUTRAL:
 		return result  # Neutrale zählen nicht für Spieler-Cluster
 
 	var queue: Array[BoardCell] = [start]
@@ -197,7 +198,7 @@ func get_cluster(start: BoardCell) -> Array[BoardCell]:
 		result.append(cur)
 
 		for nb in get_board_cell_neighbours(cur.coords):
-			if nb.has_chip() and not visited.has(nb.coords) and nb.chip.player_id == owner:
+			if nb.has_chip() and not visited.has(nb.coords) and nb.chip.player_id == chip_owner:
 				queue.append(nb)
 
 	var is_cluster := result.size() >= CLUSTER_MIN_SIZE
@@ -288,24 +289,24 @@ func debug_print():
 				out += "· "
 			else:
 				var c := cell.chip
-				var char := ""
+				var character := ""
 				var special_marker := ""
 				
 				match c.player_id:
 					Chip.Ownership.PLAYER_ONE:
-						char = "1"
+						character = "1"
 					Chip.Ownership.PLAYER_TWO:
-						char = "2"
+						character = "2"
 					_:
-						char = "?"
+						character = "?"
 				
 				if c.special_type != Chip.Specials.NORMAL:
 					special_marker = "*"
 				
 				if cell.is_in_cluster:
-					out += "[" + char + special_marker + "]"
+					out += "[" + character + special_marker + "]"
 				else:
-					out += " " + char + special_marker + " "
+					out += " " + character + special_marker + " "
 		out += "║\n"
 	
 	out += "╚" + "══".repeat(BOARD_WIDTH) + "╝\n"
