@@ -1,7 +1,7 @@
 extends TileMapLayer
 
-@export var coords_x: int
-@export var coords_y: int
+@export var width: int
+@export var height: int
 
 enum CellDirection {
 	CELL_UP,
@@ -17,10 +17,13 @@ enum CellDirection {
 var board_cells: Dictionary
 
 func _ready() -> void:
+	GameManager.initialize_game_board.connect(_init_game_board)
+			
+func _init_game_board():
 	board_cells = {}
 
-	for i in coords_x:
-		for j in coords_y:
+	for i in width:
+		for j in height:
 			# Instantiate tile map cells
 			set_cell(Vector2i(i, j), 0, Vector2i(0, 0))
 			
