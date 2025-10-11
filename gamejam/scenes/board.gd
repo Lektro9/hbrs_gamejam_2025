@@ -1,5 +1,7 @@
 extends Node2D
 
+signal board_updated
+
 @export var BOARD_WIDTH: int
 @export var BOARD_HEIGHT: int
 
@@ -35,9 +37,22 @@ func _init_game_board():
 		for cell_neighbour in board_cells[board_cell].neighbours:
 			print("\t -> %s" % cell_neighbour)
 
+func _chip_gravity(cell: BoardCell) -> void:
+	if cell.has_chip():
+		var cell_below = get_board_cell_neighbour(cell.coords, CellDirection.CELL_DOWN)
+		
+		if not cell_below.has_chip():
+			cell_below.chip = cell.chip
+			cell.chip = null
+			_chip_gravity(cell_below)
+
 # TODO
-func update():
-	pass
+func update() -> void:
+	# Chip gravity beginning at the bottom
+	for cell in get_row(0):
+		_chip_gravity(cell)
+		
+	board_updated.emit()
 
 func get_board_cell(coords: Vector2i) -> BoardCell:
 	if board_cells.has(coords):
@@ -110,6 +125,17 @@ func get_column(col_num: int) -> Array[BoardCell]:
 		col_cells.append(get_board_cell_by_coords(col_num, i))
 	
 	return col_cells
+	
+func get_row(row_num: int) -> Array[BoardCell]:
+	assert(row_num < BOARD_HEIGHT, 
+	"Position of row must be smaller than board height, which is %s" % BOARD_HEIGHT)
+	
+	var row_cells: Array[BoardCell] = []
+	
+	for i in BOARD_HEIGHT:
+		row_cells.append(get_board_cell_by_coords(i, row_num))
+	
+	return row_cells
 
 # TODO
 func get_column_free_spot(col_num: int):
@@ -117,20 +143,13 @@ func get_column_free_spot(col_num: int):
 	"Position of column must be smaller than board width, which is %s" % BOARD_WIDTH)
 	
 	pass
-	
-func chip_gravity(cell: BoardCell):
-	if cell.has_chip():
-		var cell_below = get_board_cell_neighbour(cell.coords, CellDirection.CELL_DOWN)
-		
-		if not cell_below.has_chip():
-			cell_below.chip = cell.chip
-			cell.chip = null
-	
-	pass
 
 func all_chips_in_play() -> Array[BoardCell]:
 	return board_cells.values().filter(func(c: BoardCell): return c.has_chip())
 	
+func drop_chip(chip: ChipStats, col_num: int):
+	var cell = get_board_cell_by_coords(col_num, BOARD_HEIGHT - 1)
 	
-func drop_chip():
-	pass
+	if (not cell.has_chip()):
+		cell.assign_chip(chip)
+		_chip_gravity(cell)

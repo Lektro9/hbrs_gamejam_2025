@@ -32,3 +32,6 @@ func _to_string() -> String:
 
 func has_chip() -> bool:
 	return chip != null
+
+func assign_chip(c = ChipStats) -> void:
+	self.chip = c
