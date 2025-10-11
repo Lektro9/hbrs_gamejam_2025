@@ -47,6 +47,7 @@ metadata/_custom_type_script = "uid://bhd4nuiu23e7l"
 
 [node name="DebugMenu" parent="." instance=ExtResource("2_0wfyh")]
 
-[node name="Board" parent="." instance=ExtResource("3_tipki")]
-width = 8
-height = 8
+[node name="GameBoard" parent="." instance=ExtResource("3_tipki")]
+unique_name_in_owner = true
+BOARD_WIDTH = 8
+BOARD_HEIGHT = 8

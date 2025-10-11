@@ -1,7 +1,7 @@
 extends TileMapLayer
 
-@export var width: int
-@export var height: int
+@export var BOARD_WIDTH: int
+@export var BOARD_HEIGHT: int
 
 enum CellDirection {
 	CELL_UP,
@@ -22,8 +22,8 @@ func _ready() -> void:
 func _init_game_board():
 	board_cells = {}
 
-	for i in width:
-		for j in height:
+	for i in BOARD_WIDTH:
+		for j in BOARD_HEIGHT:
 			# Instantiate tile map cells
 			set_cell(Vector2i(i, j), 0, Vector2i(0, 0))
 			
@@ -38,6 +38,7 @@ func _init_game_board():
 		for cell_neighbour in board_cells[board_cell].neighbours:
 			print("\t -> %s" % cell_neighbour)
 
+# TODO
 func update():
 	pass
 
@@ -79,7 +80,36 @@ func get_board_cell_neighbours(coords: Vector2i) -> Array[BoardCell]:
 	
 	return cells
 	
+# TODO
 func get_board_cell_neighbours_in_radius(coords: Vector2i, radius: int = 1) -> Array[BoardCell]:
-	var cells: Array[BoardCell] = []
+	var cells: Dictionary[Vector2i, BoardCell] = {}
+	var cells_array: Array[BoardCell]
 	
-	return cells
+	var neighbours = get_board_cell_neighbours(coords)
+	
+	for neighbour in neighbours:
+		cells[neighbour.coords] = neighbour
+	
+	for cell in cells:
+		cells_array.append(cells[cell])
+		
+	return cells_array
+
+func get_column(col_num: int) -> Array[BoardCell]:
+	assert(col_num < BOARD_WIDTH, 
+	"Position of column must be smaller than board width, which is %s" % BOARD_WIDTH)
+	
+	var col_cells: Array[BoardCell] = []
+	
+	for i in BOARD_HEIGHT:
+		col_cells.append(get_board_cell_by_coords(col_num, i))
+	
+	return col_cells
+
+# TODO
+func get_column_free_spot(col_num: int):
+	assert(col_num < BOARD_WIDTH, 
+	"Position of column must be smaller than board width, which is %s" % BOARD_WIDTH)
+	
+	pass
+	
