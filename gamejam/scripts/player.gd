@@ -7,15 +7,18 @@ enum PlayerId {NEUTRAL = 0, PLAYER_ONE, PLAYER_TWO}
 var chip_scene: PackedScene = preload("res://scenes/chip.tscn")
 var current_chip: Chip
 
-func _init(p_player_id: int):
-	player_id = PlayerId.get(p_player_id)
-	
-	spawn_new_chip()
+func _init():
+	#player_id = PlayerId.get(p_player_id)
+	pass
+	#current_chip.stats = spawn_new_chip()
 
-func spawn_new_chip():
-	current_chip = chip_scene.instantiate()
-	current_chip.initialize(player_id)
-	add_child(current_chip)
+func init(p_player_id: int):
+	player_id = p_player_id as PlayerId
+
+func spawn_new_chip() -> ChipStats:
+	var chip = chip_scene.instantiate()
+	chip.initialize(player_id)
+	return chip.stats
 	
 func get_current_chip() -> Chip:
 	return current_chip
@@ -28,4 +31,4 @@ func set_player_nr(nr: int):
 	
 
 func drop_chip(chip: ChipStats, col: int):
-	GameManager.game_board.drop_chip(chip, col)
+	GameManager.drop_chip(chip, col)
