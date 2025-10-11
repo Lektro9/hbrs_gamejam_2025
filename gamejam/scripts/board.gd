@@ -35,9 +35,8 @@ func _init(height, width):
 			
 	for board_cell in board_cells:
 		board_cells[board_cell].neighbours = get_board_cell_neighbours(board_cell).filter(func(bc: BoardCell): return bc != null)
-		print(board_cells[board_cell])
-		for cell_neighbour in board_cells[board_cell].neighbours:
-			print("\t -> %s" % cell_neighbour)
+	
+	debug_print()
 
 ## Makes a chip "fall down" in the data layer
 func _chip_gravity(cell: BoardCell) -> void:
@@ -274,3 +273,21 @@ func get_team_scores() -> Dictionary[Chip.Ownership, int]:
 		Chip.Ownership.PLAYER_ONE: score1,
 		Chip.Ownership.PLAYER_TWO: score2
 	}
+
+func debug_print():
+	var out := ""
+	for y in range(BOARD_HEIGHT - 1, -1, -1): # oben nach unten
+		for x in range(BOARD_WIDTH):
+			var cell := get_board_cell_by_coords(x, y)
+			if not cell.has_chip():
+				out += ". "
+			else:
+				match cell.chip.ownership:
+					Chip.Ownership.PLAYER_ONE:
+						out += "1 "
+					Chip.Ownership.PLAYER_TWO:
+						out += "2 "
+					_:
+						out += "N "
+		out += "\n"
+	print(out)
