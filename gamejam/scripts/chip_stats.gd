@@ -3,6 +3,7 @@ extends Resource
 
 enum Specials {NORMAL = 0, BONUS}
 
+@export var is_player_one: bool = true
 @export var chip_value: int = 1
 @export var special_type: Specials = Specials.NORMAL
 

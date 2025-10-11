@@ -10,6 +10,7 @@ extends Node2D
 
 func initialize(is_player_one: bool) -> void:
 	_ready() 
+	stats.is_player_one = is_player_one
 	
 	if is_player_one:
 		sprite_2d.texture = img_blue
