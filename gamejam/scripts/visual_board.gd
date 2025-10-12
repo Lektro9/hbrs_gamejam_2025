@@ -1,4 +1,5 @@
 extends Node2D
+class_name VisualBoard
 
 @export var empty_texture: Texture2D
 
@@ -59,7 +60,6 @@ func _draw_board():
 				chip.position = origin + Vector2(x, grid_size.y - 1 - y) * cell_size
 				filled_grid_container.add_child(chip)
 				chip.start_falling(grid_size.y * cell_size.y)
-				
 
 func drop_chip(column: int):
 	GameManager.drop_chip(column)
@@ -88,3 +88,9 @@ func spawn_column_areas():
 		col_area.position = origin + Vector2(x, grid_size.y/2.0 - 0.5) * cell_size
 		col_area.column_size = Vector2(cell_size.x, cell_size.y * grid_size.y)
 		column_container.add_child(col_area)
+		
+func get_cell_world_position(x: int, y: int) -> Vector2:
+	var total_size = Vector2(grid_size.x - 1, grid_size.y - 1) * cell_size
+	var origin = -total_size * 0.5  # center the grid
+	var local_pos = origin + Vector2(x, grid_size.y - 1 - y) * cell_size
+	return empty_grid_container.to_global(local_pos)
