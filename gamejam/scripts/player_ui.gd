@@ -50,7 +50,6 @@ func _on_score_add_pressed() -> void:
 func update_chip_label(chip: ChipInstance) -> void:
 	var double = chip.duplicate()
 	%SpawnMarker.add_child(double)
-	print(chip_desc)
 	chip_desc.text = double.ChipResource.description
 	pass
 	

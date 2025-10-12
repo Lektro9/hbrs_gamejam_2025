@@ -214,22 +214,29 @@ position = Vector2(41, 100)
 unique_name_in_owner = true
 shape = SubResource("CircleShape2D_48xfa")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="HoverPanel" type="Panel" parent="."]
+unique_name_in_owner = true
+visible = false
 offset_left = 62.0
 offset_top = 270.0
-offset_right = 102.0
-offset_bottom = 310.0
+offset_right = 262.0
+offset_bottom = 370.0
 
-[node name="ChipDesc" type="RichTextLabel" parent="Panel"]
-unique_name_in_owner = true
+[node name="MarginContainer" type="MarginContainer" parent="HoverPanel"]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 200.0
+offset_bottom = 100.0
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="ChipDesc" type="RichTextLabel" parent="HoverPanel/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
 theme = ExtResource("2_sk4pr")
 theme_override_fonts/normal_font = ExtResource("3_8isll")
-theme_override_font_sizes/normal_font_size = 12
+theme_override_font_sizes/normal_font_size = 20
 bbcode_enabled = true
-text = "texttefa "
 
 [node name="TextureRect" type="TextureRect" parent="."]
 modulate = Color(1, 1, 1, 0.105882354)
@@ -244,3 +251,5 @@ script = ExtResource("3_48xfa")
 [connection signal="pressed" from="MainMenu/Vbox/StartGame" to="." method="start_game"]
 [connection signal="pressed" from="MainMenu/Game Settings/ScoreContainer/ScoreSub" to="." method="_on_score_sub_pressed"]
 [connection signal="pressed" from="MainMenu/Game Settings/ScoreContainer/ScoreAdd" to="." method="_on_score_add_pressed"]
+[connection signal="mouse_entered" from="NextChipContainer/Area2D" to="." method="_on_area_2d_mouse_entered"]
+[connection signal="mouse_exited" from="NextChipContainer/Area2D" to="." method="_on_area_2d_mouse_exited"]
