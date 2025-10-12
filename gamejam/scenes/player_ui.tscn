@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://bb4bqi8ghs0su"]
+[gd_scene load_steps=3 format=3 uid="uid://bb4bqi8ghs0su"]
 
 [ext_resource type="Script" uid="uid://gt2igi5lslwk" path="res://scripts/player_ui.gd" id="1_jkj6h"]
+[ext_resource type="Theme" uid="uid://c3bfsu14hvt5x" path="res://global_theme.tres" id="2_sk4pr"]
 
 [node name="PlayerUI" type="CanvasLayer"]
 script = ExtResource("1_jkj6h")
@@ -13,6 +14,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme = ExtResource("2_sk4pr")
 
 [node name="Player1Score" type="RichTextLabel" parent="ScoreBoard"]
 unique_name_in_owner = true
@@ -37,6 +39,7 @@ offset_left = 9.0
 offset_top = 135.0
 offset_right = 182.0
 offset_bottom = 158.0
+theme = ExtResource("2_sk4pr")
 text = "Next Chip:"
 
 [node name="NCValue" type="Label" parent="NextChip"]
@@ -55,6 +58,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 4
+theme = ExtResource("2_sk4pr")
 
 [node name="ResultText" type="RichTextLabel" parent="GameOver"]
 unique_name_in_owner = true
@@ -83,6 +87,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2_sk4pr")
 
 [node name="Vbox" type="VBoxContainer" parent="MainMenu"]
 unique_name_in_owner = true
@@ -102,7 +107,7 @@ size_flags_vertical = 10
 theme_override_font_sizes/normal_font_size = 72
 theme_override_font_sizes/bold_font_size = 72
 bbcode_enabled = true
-text = "Connect'em!"
+text = "Connect'Em!"
 horizontal_alignment = 1
 
 [node name="StartGame" type="Button" parent="MainMenu/Vbox"]
