@@ -2,8 +2,8 @@ class_name GameBoardData
 extends Node2D
 
 signal board_updated
-signal chip_dropped(chip: ChipInstance, column: int, coords: Vector2i)
-signal ability_triggered(ability_name: String, cell: Vector2i, effects: Array)
+signal chip_dropped(chip: ChipInstance, column: int, cell: BoardCell)
+signal ability_triggered(ability_name: String, cell: BoardCell, effects: Array)
 signal effects_resolving(effects: Array)
 signal cell_destroyed(pos: Vector2i, owner_before: int)
 signal cell_recolored(pos: Vector2i, owner_before: int, owner_after: int)
@@ -110,6 +110,17 @@ func get_board_cell_neighbour(coords: Vector2i, direction: CellDirection) -> Boa
 			
 	return null
 
+## Returns all neighbours of a single cell in a cross
+func get_board_cell_neighbours_cross(coords: Vector2i) -> Array[BoardCell]:
+	var cells: Array[BoardCell] = []
+	
+	cells.append(get_board_cell_neighbour(coords, CellDirection.CELL_UP))
+	cells.append(get_board_cell_neighbour(coords, CellDirection.CELL_RIGHT))
+	cells.append(get_board_cell_neighbour(coords, CellDirection.CELL_DOWN))
+	cells.append(get_board_cell_neighbour(coords, CellDirection.CELL_LEFT))
+	
+	return cells.filter(func(c: BoardCell): c != null)
+
 ## Returns all neighbours of a single cell
 func get_board_cell_neighbours(coords: Vector2i) -> Array[BoardCell]:
 	var cells: Array[BoardCell] = []
@@ -130,7 +141,6 @@ func get_cells_below_board_cell(cell: BoardCell) -> Array[BoardCell]:
 		
 	return cells_below
 	
-# TODO
 ## Returns all neighbours that are in a certain radius around cell
 func get_board_cell_neighbours_in_radius(coords: Vector2i, radius: int = 1) -> Array[BoardCell]:
 	var out: Array[BoardCell] = []
@@ -197,7 +207,7 @@ func drop_chip(chip: ChipInstance, col_num: int):
 			break
 	
 	if landed:
-		chip_dropped.emit(chip, col_num, landed.coords)
+		chip_dropped.emit(chip, col_num, landed)
 	if landed and chip.ChipResource and chip.ChipResource.ability != null:
 		var ctx := Ability.AbilityContext.new()
 		ctx.board = self
@@ -208,7 +218,7 @@ func drop_chip(chip: ChipInstance, col_num: int):
 
 		var fx: Array[Effect] = chip.ChipResource.ability.compute_effects(ctx)
 		
-		ability_triggered.emit(chip.ChipResource.ability.get_class(), landed.coords, fx)
+		ability_triggered.emit(chip.ChipResource.ability.get_class(), landed, fx)
 		resolve_effects(fx)
 
 
