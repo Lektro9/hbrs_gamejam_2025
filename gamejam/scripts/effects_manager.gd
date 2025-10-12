@@ -5,6 +5,7 @@ var _board: GameBoardData = null
 @onready var screen_shake: PhantomCameraNoiseEmitter2D = %ScreenShake
 @onready var sfx_stream: AudioStreamPlayer2D = %AudioStreamSFX
 @onready var visual_board: VisualBoard = %VisualBoard
+
 var SFX_CHIP_DROP: AudioStream = preload("res://audio/chip_drop.mp3")
 var SFX_RECOLOR: AudioStream = preload("res://audio/paint_splash.wav")
 var SFX_DESTROY_VARIANTS: Array = [
@@ -66,6 +67,8 @@ func _on_chip_dropped(chip: ChipInstance, column: int, cell: BoardCell) -> void:
 func _on_cell_recolored(pos: Vector2i, owner_before: int, owner_after: int) -> void:
 	shake_small()
 	sfx_on_cell_recolored(pos, owner_before, owner_after)
+	if visual_board:
+		visual_board.play_recolor_effect(pos, owner_after)
 
 func _on_cell_destroyed(pos: Vector2i, owner_before: int) -> void:
 	shake_medium()
