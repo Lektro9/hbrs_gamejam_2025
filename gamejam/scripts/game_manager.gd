@@ -4,9 +4,12 @@ signal game_over(winner: int, show_win_screen: bool)
 signal update_player_score(scores)
 signal show_score_board(should_show: bool)
 signal show_main_menu(should_show: bool)
+signal show_chip_value(should_show: bool)
 signal init_visual_board
 signal scroll_background(is_going_down: bool)
+signal update_curr_chip(chip: ChipInstance)
 
+@onready var draw_label: Label = $DebugUi/DrawLabel
 @onready var state_chart: StateChart = $StateChart
 @onready var debug_ui: CanvasLayer = $DebugUi
 @onready var state_chart_debugger: MarginContainer = $DebugUi/StateChartDebugger
@@ -46,7 +49,7 @@ func drop_chip(col: int):
 func restart_game():
 	state_chart.set_expression_property("is_game_won", false)
 	state_chart.send_event("restart_game")
-	
+
 func set_is_game_won_expression(is_game_won: bool):
 	state_chart.set_expression_property("is_game_won", is_game_won)
 
@@ -57,11 +60,9 @@ func _on_init_state_entered() -> void:
 	set_is_game_won_expression(false)
 	show_main_menu.emit(true)
 	show_score_board.emit(false)
+	show_chip_value.emit(false)
 	game_over.emit(get_player().player_id, false)
 	does_player_one_play = true
-	
-	print("new game")
-
 
 func _on_init_state_exited() -> void:
 	game_board = GameBoardData.new(BOARD_HEIGHT, BOARD_WIDTH)
@@ -78,14 +79,17 @@ func _on_drop_chip_state_entered() -> void:
 	update_player_score.emit(scores)
 	print("Player 1 has: " + str(player_1.score))
 	print("Player 2 has: " + str(player_2.score))
-	
 
-func _on_check_win_state_entered() -> void:
+func _on_check_win_state_entered() -> void:	
+	if game_board.all_chips_in_play().size() >= BOARD_HEIGHT * BOARD_WIDTH:
+		state_chart.send_event("draw_game")
+	if player_1.score >= score_needed && player_2.score >= score_needed:
+		state_chart.send_event("draw_game")
 	if player_1.score >= score_needed:
 		set_is_game_won_expression(true)
 	if player_2.score >= score_needed:
 		set_is_game_won_expression(true)
-	
+
 func _on_switch_player_state_entered() -> void:
 	switch_player()
 	# A full round completes when control returns to Player 1
@@ -99,8 +103,8 @@ func _on_switch_player_state_entered() -> void:
 			player_2.score = scores.get(player_2.player_id)
 			update_player_score.emit(scores)
 
-
 func _on_player_turn_state_entered() -> void:
+	show_chip_value.emit(true)
 	show_score_board.emit(true)
 	show_main_menu.emit(false)
 	var current_player = get_player()
@@ -131,7 +135,15 @@ func _on_player_turn_state_entered() -> void:
 	current_chip.player_id = current_player.player_id
 	current_chip.color = current_player.color
 	current_player.current_chip = current_chip
+	
+	update_curr_chip.emit(current_player.current_chip)
 
 
 func _on_win_state_entered() -> void:
 	game_over.emit(get_player().player_id, true)
+
+func _on_draw_state_entered() -> void:
+	draw_label.visible = true
+
+func _on_draw_state_exited() -> void:
+	draw_label.visible = false

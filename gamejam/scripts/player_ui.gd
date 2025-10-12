@@ -5,12 +5,16 @@ extends CanvasLayer
 @onready var score_input: LineEdit = %ScoreInput
 @onready var grid_x_input: LineEdit = %GridXInput
 @onready var grid_y_input: LineEdit = %GridYInput
+@onready var next_chip: Label = %NextChip
+@onready var nc_value: Label = %NCValue
 
 func _ready() -> void:
 	GameManager.update_player_score.connect(update_score_labels)
 	GameManager.game_over.connect(set_up_game_over)
 	GameManager.show_score_board.connect(func(should_show): %ScoreBoard.visible = should_show)
 	GameManager.show_main_menu.connect(func(should_show): %MainMenu.visible = should_show)
+	GameManager.show_chip_value.connect(show_chip_label)
+	GameManager.update_curr_chip.connect(update_chip_label)
 	
 func update_score_labels(scores):
 	var p1_score = scores.get(Chip.Ownership.PLAYER_ONE)
@@ -34,9 +38,15 @@ func start_game():
 func restart_game():
 	GameManager.state_chart.send_event("restart_game")
 
-
 func _on_score_sub_pressed() -> void:
 	score_input.text = str(int(score_input.text) - 1)
 
 func _on_score_add_pressed() -> void:
 	score_input.text = str(int(score_input.text) + 1)
+
+func update_chip_label(chip: ChipInstance) -> void:
+	nc_value.text = str(chip.ChipResource.special_type)
+	
+func show_chip_label(show):
+	next_chip.visible = show
+	nc_value.visible = show

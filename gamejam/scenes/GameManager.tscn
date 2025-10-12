@@ -117,6 +117,15 @@ offset_bottom = -55.0
 grow_horizontal = 0
 initial_node_to_watch = NodePath("../../StateChart")
 
+[node name="DrawLabel" type="Label" parent="DebugUi"]
+visible = false
+offset_left = 258.0
+offset_top = 219.0
+offset_right = 1055.0
+offset_bottom = 438.0
+theme_override_font_sizes/font_size = 160
+text = "It's a draw"
+
 [connection signal="state_entered" from="StateChart/Root/Init" to="." method="_on_init_state_entered"]
 [connection signal="state_exited" from="StateChart/Root/Init" to="." method="_on_init_state_exited"]
 [connection signal="state_entered" from="StateChart/Root/PlayerTurn" to="." method="_on_player_turn_state_entered"]
@@ -124,3 +133,5 @@ initial_node_to_watch = NodePath("../../StateChart")
 [connection signal="state_entered" from="StateChart/Root/CheckWin" to="." method="_on_check_win_state_entered"]
 [connection signal="state_entered" from="StateChart/Root/SwitchPlayer" to="." method="_on_switch_player_state_entered"]
 [connection signal="state_entered" from="StateChart/Root/Win" to="." method="_on_win_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/Draw" to="." method="_on_draw_state_entered"]
+[connection signal="state_exited" from="StateChart/Root/Draw" to="." method="_on_draw_state_exited"]

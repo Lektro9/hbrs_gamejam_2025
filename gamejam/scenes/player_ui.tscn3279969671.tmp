@@ -7,6 +7,7 @@ script = ExtResource("1_jkj6h")
 
 [node name="ScoreBoard" type="HBoxContainer" parent="."]
 unique_name_in_owner = true
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -31,15 +32,12 @@ size_flags_vertical = 0
 theme_override_font_sizes/normal_font_size = 72
 text = "Player 2: 0"
 
-[node name="NextChip" type="Label" parent="."]
+[node name="NextChip" type="Label" parent="ScoreBoard"]
 unique_name_in_owner = true
-offset_left = 9.0
-offset_top = 135.0
-offset_right = 182.0
-offset_bottom = 158.0
-text = "Next Chip:"
+layout_mode = 2
+text = "Next Chip for Player 1:"
 
-[node name="NCValue" type="Label" parent="NextChip"]
+[node name="NCValue" type="Label" parent="ScoreBoard/NextChip"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 177.0
