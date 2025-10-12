@@ -381,7 +381,7 @@ func resolve_effects(effects: Array[Effect]) -> void:
 		var c := get_board_cell(e.pos_a)
 		if c and c.has_chip():
 			var owner_before := c.chip.player_id
-			var owner_after := int(e.payload.get("owner", c.chip.player_id))
+			var owner_after: Chip.Ownership = e.payload.get("owner", c.chip.player_id)
 			c.chip.player_id = owner_after
 			cell_recolored.emit(e.pos_a, owner_before, owner_after)
 
