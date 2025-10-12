@@ -17,7 +17,7 @@ var player_2: Player
 var game_board: GameBoardData
 var does_player_one_play = true # true for player 1, false for player 2
 var chosen_column: int
-var score_needed: int = 4
+var score_needed: int = 20
 var BOARD_HEIGHT: int = 6
 var BOARD_WIDTH: int = 7
 
@@ -32,7 +32,7 @@ func get_player() -> Player:
 	else:
 		return player_2
 
-func switch_player(): 
+func switch_player():
 	does_player_one_play = !does_player_one_play
 
 func start_game():
@@ -82,15 +82,47 @@ func _on_check_win_state_entered() -> void:
 		set_is_game_won_expression(true)
 	
 func _on_switch_player_state_entered() -> void:
-		switch_player()
+	switch_player()
+	# A full round completes when control returns to Player 1
+	if does_player_one_play:
+		var tx: Array[Effect] = game_board.tick_timers_and_collect_effects()
+		if not tx.is_empty():
+			game_board.resolve_effects(tx)
+			# refresh scores after timer explosions
+			var scores := game_board.get_team_scores()
+			player_1.score = scores.get(player_1.player_id)
+			player_2.score = scores.get(player_2.player_id)
+			update_player_score.emit(scores)
 
 
 func _on_player_turn_state_entered() -> void:
 	show_score_board.emit(true)
 	show_main_menu.emit(false)
 	var current_player = get_player()
-	var current_chip:ChipInstance = CHIP_INSTANCE.instantiate()
-	current_chip.ChipResource = DEFAULT_CHIP
+	var current_chip: ChipInstance = CHIP_INSTANCE.instantiate()
+
+	# Create a per-chip resource instance to safely mutate specials
+	var chip_res: Chip = DEFAULT_CHIP.duplicate(true)
+	# 20% chance to be special with weights Explode 40, Paint 40, Timer 20
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	var is_special := rng.randi_range(1, 100) <= 20
+	if is_special:
+		var roll := rng.randi_range(1, 100)
+		if roll <= 40:
+			chip_res.special_type = Chip.Specials.EXPLODE
+			chip_res.ability = AbilityExplode.new()
+		elif roll <= 80:
+			chip_res.special_type = Chip.Specials.PAINT
+			chip_res.ability = AbilityPaint.new()
+		else:
+			chip_res.special_type = Chip.Specials.TIMER
+			chip_res.ability = AbilityTimer.new()
+	else:
+		chip_res.special_type = Chip.Specials.NORMAL
+		chip_res.ability = null
+
+	current_chip.ChipResource = chip_res
 	current_chip.player_id = current_player.player_id
 	current_chip.color = current_player.color
 	current_player.current_chip = current_chip

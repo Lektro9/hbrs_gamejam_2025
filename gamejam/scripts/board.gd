@@ -142,7 +142,7 @@ func get_board_cell_neighbours_in_radius(coords: Vector2i, radius: int = 1) -> A
 
 ## Returns all cells in a certain column
 func get_column(col_num: int) -> Array[BoardCell]:
-	assert(col_num >= 0 and col_num < BOARD_WIDTH, 
+	assert(col_num >= 0 and col_num < BOARD_WIDTH,
 	"Position of column must be smaller than board width, which is %s" % BOARD_WIDTH)
 	
 	var col_cells: Array[BoardCell] = []
@@ -154,7 +154,7 @@ func get_column(col_num: int) -> Array[BoardCell]:
 
 ## Returns all cells in a certain row
 func get_row(row_num: int) -> Array[BoardCell]:
-	assert(row_num >= 0 and row_num < BOARD_HEIGHT, 
+	assert(row_num >= 0 and row_num < BOARD_HEIGHT,
 	"Position of row must be smaller than board height, which is %s" % BOARD_HEIGHT)
 	
 	var row_cells: Array[BoardCell] = []
@@ -171,22 +171,29 @@ func all_chips_in_play() -> Array[BoardCell]:
 ## Drops a chip onto the board
 func drop_chip(chip: ChipInstance, col_num: int):
 	var c = get_board_cell_by_coords(col_num, BOARD_HEIGHT - 1)
-		
+	
 	if not c.has_chip():
 		c.assign_chip(chip)
 	
 	update_board_state()
 	
-	# 
-	if chip.ability != null:
+	# Determine the landed cell of this chip after gravity
+	var landed: BoardCell = null
+	for y in BOARD_HEIGHT:
+		var cell := get_board_cell_by_coords(col_num, y)
+		if cell.has_chip() and cell.chip == chip:
+			landed = cell
+			break
+	
+	if landed and chip.ChipResource and chip.ChipResource.ability != null:
 		var ctx := Ability.AbilityContext.new()
 		ctx.board = self
-		ctx.cell = c
+		ctx.cell = landed
 		ctx.chip = chip.ChipResource
 		ctx.rng = RandomNumberGenerator.new()
 		ctx.active_player = chip.player_id
 
-		var fx = chip.ability.compute_effects(ctx)
+		var fx: Array[Effect] = chip.ChipResource.ability.compute_effects(ctx)
 		
 		resolve_effects(fx)
 
@@ -199,7 +206,7 @@ func get_cluster(start: BoardCell) -> Array[BoardCell]:
 
 	var chip_owner = start.chip.player_id
 	if chip_owner == Chip.Ownership.NEUTRAL:
-		return result  # Neutrale zählen nicht für Spieler-Cluster
+		return result # Neutrale zählen nicht für Spieler-Cluster
 
 	var queue: Array[BoardCell] = [start]
 	var visited := {}
@@ -299,9 +306,15 @@ func resolve_effects(effects: Array[Effect]) -> void:
 	# 1) Ordnung erzwingen
 	var destroy := effects.filter(func(e): return e.kind == Effect.Kind.DESTROY_CELL)
 	var recolor := effects.filter(func(e): return e.kind == Effect.Kind.RECOLOR_CELL)
-	var swap    := effects.filter(func(e): return e.kind == Effect.Kind.SWAP_CELLS)
-	var spawn   := effects.filter(func(e): return e.kind == Effect.Kind.SPAWN_CHIP)
-	var custom  := effects.filter(func(e): return e.kind == Effect.Kind.CUSTOM)
+	var swap := effects.filter(func(e): return e.kind == Effect.Kind.SWAP_CELLS)
+	var spawn := effects.filter(func(e): return e.kind == Effect.Kind.SPAWN_CHIP)
+	var timer := effects.filter(func(e): return e.kind == Effect.Kind.FLAG_TIMER)
+	var custom := effects.filter(func(e): return e.kind == Effect.Kind.CUSTOM)
+
+	# Debug summary
+	print("Effects: total=%s destroy=%s recolor=%s swap=%s spawn=%s timer=%s custom=%s" % [
+		effects.size(), destroy.size(), recolor.size(), swap.size(), spawn.size(), timer.size(), custom.size()
+	])
 
 	# 2) Ausführen
 	for e in destroy:
@@ -327,8 +340,31 @@ func resolve_effects(effects: Array[Effect]) -> void:
 		if c and not c.has_chip():
 			c.chip = e.payload.get("chip", null)
 
+	for e in timer:
+		var c := get_board_cell(e.pos_a)
+		if c and c.has_chip():
+			c.chip.timer_countdown = int(e.payload.get("countdown", c.chip.timer_countdown))
+
 	# 3) Physik + Cluster (einmal pro “Welle”)
-	update_board_state()  # deine Gravity + clusters/emit
+	update_board_state() # deine Gravity + clusters/emit
+
+
+func tick_timers_and_collect_effects() -> Array[Effect]:
+	var out: Array[Effect] = []
+	for cell in all_chips_in_play():
+		var inst := cell.chip
+		if inst != null and inst.timer_countdown != null and inst.timer_countdown >= 0:
+			if inst.timer_countdown > 0:
+				inst.timer_countdown -= 1
+			if inst.timer_countdown == 0:
+				for nb in get_board_cell_neighbours(cell.coords):
+					if nb != null and nb.has_chip():
+						var e := Effect.new()
+						e.kind = Effect.Kind.DESTROY_CELL
+						e.pos_a = nb.coords
+						out.append(e)
+				inst.timer_countdown = -1
+	return out
 
 
 func debug_print():
@@ -345,6 +381,7 @@ func debug_print():
 				var c := cell.chip
 				var char := ""
 				var special_marker := ""
+				var timer_marker := ""
 				
 				match c.player_id:
 					Chip.Ownership.PLAYER_ONE:
@@ -354,13 +391,27 @@ func debug_print():
 					_:
 						char = "?"
 				
-				if c.ChipResource.special_type != Chip.Specials.NORMAL:
-					special_marker = "*"
+				match c.ChipResource.special_type:
+					Chip.Specials.NORMAL:
+						special_marker = ""
+					Chip.Specials.EXPLODE:
+						special_marker = "E"
+					Chip.Specials.PAINT:
+						special_marker = "P"
+					Chip.Specials.TIMER:
+						special_marker = "T"
+					_:
+						special_marker = "*"
+				
+				if c.timer_countdown != null and c.timer_countdown >= 0:
+					timer_marker = str(c.timer_countdown)
+				
+				var marker := special_marker + timer_marker
 				
 				if cell.is_in_cluster:
-					out += "[" + char + special_marker + "]"
+					out += "[" + char + marker + "]"
 				else:
-					out += " " + char + special_marker + " "
+					out += " " + char + marker + " "
 		out += "║\n"
 	
 	out += "╚" + "══".repeat(BOARD_WIDTH) + "╝\n"
@@ -370,5 +421,19 @@ func debug_print():
 	for x in range(BOARD_WIDTH):
 		out += str(x) + " "
 	out += "\n"
+
+	# Timer overview line
+	var timers := []
+	for bc in all_chips_in_play():
+		var inst := bc.chip
+		if inst != null and inst.timer_countdown != null and inst.timer_countdown >= 0:
+			timers.append(str(bc.coords) + "=" + str(inst.timer_countdown))
+	if timers.size() > 0:
+		var timer_str := ""
+		for i in range(timers.size()):
+			timer_str += timers[i]
+			if i < timers.size() - 1:
+				timer_str += ", "
+		out += "Timers: " + timer_str + "\n"
 
 	print(out)
