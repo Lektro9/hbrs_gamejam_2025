@@ -11,6 +11,7 @@
 [ext_resource type="AudioStream" uid="uid://biim3ad1jrpl3" path="res://audio/swing_bg.mp3" id="8_tipki"]
 [ext_resource type="PackedScene" uid="uid://brl0maa4m6fvo" path="res://scenes/visual_board.tscn" id="9_85g3d"]
 [ext_resource type="PackedScene" uid="uid://d04oak74u5og1" path="res://scenes/menu_bg.tscn" id="11_ya4ey"]
+[ext_resource type="Script" uid="uid://b83sx6pepiwf0" path="res://scripts/effects_manager.gd" id="10_fx"]
 
 [sub_resource type="Resource" id="Resource_tipki"]
 script = ExtResource("4_tefeu")
@@ -18,7 +19,7 @@ script = ExtResource("4_tefeu")
 [sub_resource type="Resource" id="Resource_85g3d"]
 script = ExtResource("7_tipki")
 randomize_noise_seed = 1
-noise_seed = 832
+noise_seed = 736
 metadata/_custom_type_script = "uid://dimvdouy8g0sv"
 
 [node name="Main" type="Node2D"]
@@ -46,6 +47,9 @@ process_physics_priority = 300
 script = ExtResource("5_o6xl0")
 metadata/_custom_type_script = "uid://bd046eokvcnu2"
 
+[node name="AudioListener2D" type="AudioListener2D" parent="MainCam"]
+current = true
+
 [node name="ScreenShake" type="Node2D" parent="."]
 unique_name_in_owner = true
 script = ExtResource("6_o6xl0")
@@ -54,12 +58,23 @@ metadata/_custom_type_script = "uid://bhd4nuiu23e7l"
 
 [node name="DebugMenu" parent="." instance=ExtResource("2_0wfyh")]
 
-[node name="AudioStream" type="AudioStreamPlayer2D" parent="."]
+[node name="AudioStreamMusic" type="AudioStreamPlayer2D" parent="."]
+unique_name_in_owner = true
 stream = ExtResource("8_tipki")
 autoplay = true
+panning_strength = 0.0
 bus = &"BG"
 parameters/looping = true
+
+[node name="AudioStreamSFX" type="AudioStreamPlayer2D" parent="."]
+unique_name_in_owner = true
+max_polyphony = 32
+bus = &"SFX"
 
 [node name="VisualBoard" parent="." instance=ExtResource("9_85g3d")]
 
 [node name="PlayerUI" parent="." instance=ExtResource("3_choun")]
+
+[node name="EffectsManager" type="Node2D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("10_fx")
