@@ -6,8 +6,10 @@ extends CanvasLayer
 @onready var grid_x_input: LineEdit = %GridXInput
 @onready var grid_y_input: LineEdit = %GridYInput
 @onready var next_chip: Label = %NextChip
-@onready var nc_value: Label = %NCValue
 @onready var next_chip_container: VBoxContainer = %NextChipContainer
+@onready var area_2d: Area2D = %Area2D
+@onready var hover_panel: Panel = %HoverPanel
+@onready var chip_desc: RichTextLabel = %ChipDesc
 
 func _ready() -> void:
 	GameManager.update_player_score.connect(update_score_labels)
@@ -48,7 +50,14 @@ func _on_score_add_pressed() -> void:
 func update_chip_label(chip: ChipInstance) -> void:
 	var double = chip.duplicate()
 	%SpawnMarker.add_child(double)
+	chip_desc.text = double.ChipResource.description
 	pass
 	
 func show_chip_label(show):
 	next_chip.visible = show
+
+func _on_area_2d_mouse_entered() -> void:
+	hover_panel.visible = true
+
+func _on_area_2d_mouse_exited() -> void:
+	hover_panel.visible = false

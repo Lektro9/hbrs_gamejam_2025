@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://bb4bqi8ghs0su"]
+[gd_scene load_steps=4 format=3 uid="uid://bb4bqi8ghs0su"]
 
 [ext_resource type="Script" uid="uid://gt2igi5lslwk" path="res://scripts/player_ui.gd" id="1_jkj6h"]
 [ext_resource type="Theme" uid="uid://c3bfsu14hvt5x" path="res://global_theme.tres" id="2_sk4pr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_48xfa"]
 
 [node name="PlayerUI" type="CanvasLayer"]
 script = ExtResource("1_jkj6h")
@@ -176,17 +178,48 @@ offset_top = 171.0
 offset_right = 62.0
 offset_bottom = 211.0
 
+[node name="SpawnMarker" type="Marker2D" parent="NextChipContainer"]
+unique_name_in_owner = true
+position = Vector2(41, 87)
+scale = Vector2(0.99999994, 0.99999994)
+
+[node name="Area2D" type="Area2D" parent="NextChipContainer"]
+unique_name_in_owner = true
+position = Vector2(40, 85)
+scale = Vector2(5.323825, -5.3847847)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="NextChipContainer/Area2D"]
+unique_name_in_owner = true
+shape = SubResource("RectangleShape2D_48xfa")
+
+[node name="HoverPanel" type="Panel" parent="NextChipContainer/Area2D"]
+unique_name_in_owner = true
+offset_right = 40.0
+offset_bottom = 40.0
+scale = Vector2(1.0676208, -0.6862326)
+
+[node name="ChipDesc" type="RichTextLabel" parent="NextChipContainer/Area2D/HoverPanel"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1.9353156
+offset_top = 2.7061996
+offset_right = 243.93532
+offset_bottom = 50.7062
+scale = Vector2(0.10982784, 0.20405564)
+bbcode_enabled = true
+text = "This is my text"
+
 [node name="NextChip" type="Label" parent="NextChipContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("2_sk4pr")
 text = "Next Chip:"
 
-[node name="SpawnMarker" type="Marker2D" parent="NextChipContainer"]
-unique_name_in_owner = true
-position = Vector2(41, 99)
-
 [connection signal="pressed" from="GameOver/RestartGame" to="." method="restart_game"]
 [connection signal="pressed" from="MainMenu/Vbox/StartGame" to="." method="start_game"]
 [connection signal="pressed" from="MainMenu/Game Settings/ScoreContainer/ScoreSub" to="." method="_on_score_sub_pressed"]
 [connection signal="pressed" from="MainMenu/Game Settings/ScoreContainer/ScoreAdd" to="." method="_on_score_add_pressed"]
+[connection signal="mouse_entered" from="NextChipContainer" to="." method="_on_next_chip_container_mouse_entered"]
+[connection signal="mouse_exited" from="NextChipContainer" to="." method="_on_next_chip_container_mouse_exited"]
+[connection signal="mouse_entered" from="NextChipContainer/Area2D" to="." method="_on_area_2d_mouse_entered"]
+[connection signal="mouse_exited" from="NextChipContainer/Area2D" to="." method="_on_area_2d_mouse_exited"]
