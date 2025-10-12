@@ -11,6 +11,8 @@ var SFX_DESTROY_VARIANTS: Array = [
 ]
 var SFX_TIMER_EXPLODE: AudioStream = preload("res://audio/medium_explosion.wav")
 
+var SFX_GAME_OVER: AudioStream = preload("res://audio/yay.mp3")
+
 func _ready():
 	if Engine.is_editor_hint():
 		return
@@ -19,6 +21,9 @@ func _ready():
 	# If a board already exists already, hook immediately
 	if GameManager.game_board != null:
 		_hook_to_board(GameManager.game_board)
+	
+	if not GameManager.game_over.is_connected(sfx_on_game_over):
+		GameManager.game_over.connect(sfx_on_game_over)
 
 func _on_init_visual_board():
 	_hook_to_board(GameManager.game_board)
@@ -51,9 +56,9 @@ func _hook_to_board(board: GameBoardData):
 		_board.timer_exploded.connect(_on_timer_exploded)
 
 # Event handlers
-func _on_chip_dropped(chip: ChipInstance, column: int, coords: Vector2i) -> void:
+func _on_chip_dropped(chip: ChipInstance, column: int, cell: BoardCell) -> void:
 	shake_small()
-	sfx_on_chip_dropped(chip, column, coords)
+	sfx_on_chip_dropped(chip, column, cell.coords)
 
 func _on_cell_recolored(pos: Vector2i, owner_before: int, owner_after: int) -> void:
 	shake_small()
@@ -62,6 +67,7 @@ func _on_cell_recolored(pos: Vector2i, owner_before: int, owner_after: int) -> v
 func _on_cell_destroyed(pos: Vector2i, owner_before: int) -> void:
 	shake_medium()
 	sfx_on_cell_destroyed(pos, owner_before)
+	vfx_on_cell_destroyed(pos, owner_before)
 
 func _on_timer_exploded(center: Vector2i, destroyed_positions: Array) -> void:
 	shake_strong()
@@ -126,6 +132,17 @@ func sfx_on_cell_destroyed(_pos: Vector2i, _owner_before: int) -> void:
 	var idx := rng.randi_range(0, SFX_DESTROY_VARIANTS.size() - 1)
 	sfx_stream.stream = SFX_DESTROY_VARIANTS[idx]
 	sfx_stream.play()
+
+func sfx_on_game_over(_winner: int, _show_win_screen: bool):
+	if sfx_stream == null:
+		return
+	sfx_stream.stream = SFX_GAME_OVER
+	sfx_stream.play()
+
+
+# VFX
+func vfx_on_cell_destroyed(_pos: Vector2i, _owner_before: int):
+	_board.get_board_cell(_pos)
 
 #func sfx_on_timer_exploded(_center: Vector2i, _destroyed_positions: Array) -> void:
 	#if sfx_stream == null:

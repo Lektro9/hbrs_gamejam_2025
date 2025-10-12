@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3 uid="uid://brl0maa4m6fvo"]
+
+[ext_resource type="Script" uid="uid://hqtyrljwugbi" path="res://scripts/visual_board.gd" id="1_gqwxl"]
+[ext_resource type="Texture2D" uid="uid://005mq1jimp5n" path="res://images/empty_cell.png" id="2_bycon"]
+
+[node name="VisualBoard" type="Node2D"]
+script = ExtResource("1_gqwxl")
+empty_texture = ExtResource("2_bycon")
+
+[node name="GridContainer" type="Node2D" parent="."]
+scale = Vector2(0.5, 0.5)
+
+[node name="EmptyGridContainer" type="Node2D" parent="GridContainer"]
+
+[node name="FilledGridContainer" type="Node2D" parent="GridContainer"]
+
+[node name="ColumnContainer" type="Node2D" parent="GridContainer"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="DrawLabel" type="Label" parent="CanvasLayer"]
+visible = false
+offset_left = 248.0
+offset_top = 252.0
+offset_right = 1045.0
+offset_bottom = 471.0
+theme_override_font_sizes/font_size = 160
+text = "It's a draw"
+horizontal_alignment = 1
+vertical_alignment = 1
