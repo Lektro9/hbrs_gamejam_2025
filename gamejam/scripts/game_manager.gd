@@ -58,12 +58,15 @@ func _on_init_state_entered() -> void:
 	show_score_board.emit(false)
 	game_over.emit(get_player().player_id, false)
 	does_player_one_play = true
+	
+	print("new game")
+
+
+func _on_init_state_exited() -> void:
 	game_board = GameBoardData.new(BOARD_HEIGHT, BOARD_WIDTH)
 	var scores := game_board.get_team_scores()
 	update_player_score.emit(scores)
 	init_visual_board.emit()
-	print("new game")
-	
 
 func _on_drop_chip_state_entered() -> void:
 	game_board.drop_chip(get_player().current_chip, chosen_column)

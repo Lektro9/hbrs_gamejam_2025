@@ -118,6 +118,7 @@ grow_horizontal = 0
 initial_node_to_watch = NodePath("../../StateChart")
 
 [connection signal="state_entered" from="StateChart/Root/Init" to="." method="_on_init_state_entered"]
+[connection signal="state_exited" from="StateChart/Root/Init" to="." method="_on_init_state_exited"]
 [connection signal="state_entered" from="StateChart/Root/PlayerTurn" to="." method="_on_player_turn_state_entered"]
 [connection signal="state_entered" from="StateChart/Root/DropChip" to="." method="_on_drop_chip_state_entered"]
 [connection signal="state_entered" from="StateChart/Root/CheckWin" to="." method="_on_check_win_state_entered"]

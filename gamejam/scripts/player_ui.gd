@@ -26,15 +26,10 @@ func set_up_game_over(player_id: int, shouldShow: bool):
 	%ResultText.text = "[wave amp=50.0 freq=5.0 connected=1]Player " + str(player_id) + " has won![/wave]"
 
 func start_game():
-	GameManager.start_game()
-	
 	GameManager.score_needed = int(score_input.text)
 	GameManager.BOARD_WIDTH = int(grid_x_input.text)
 	GameManager.BOARD_HEIGHT = int(grid_y_input.text)
-	
-	print(GameManager.score_needed)
-	print(GameManager.BOARD_WIDTH)
-	print(GameManager.BOARD_HEIGHT)
+	GameManager.start_game()
 
 func restart_game():
 	GameManager.state_chart.send_event("restart_game")
