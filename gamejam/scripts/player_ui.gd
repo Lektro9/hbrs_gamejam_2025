@@ -2,6 +2,9 @@ extends CanvasLayer
 @onready var player_1_score: RichTextLabel = %Player1Score
 @onready var player_2_score: RichTextLabel = %Player2Score
 @onready var score_board: HBoxContainer = %ScoreBoard
+@onready var score_input: LineEdit = %ScoreInput
+@onready var grid_x_input: LineEdit = %GridXInput
+@onready var grid_y_input: LineEdit = %GridYInput
 
 func _ready() -> void:
 	GameManager.update_player_score.connect(update_score_labels)
@@ -17,13 +20,28 @@ func update_score_labels(scores):
 
 func set_up_game_over(player_id: int, shouldShow: bool):
 	if shouldShow: 
-		%GameOver.show() 
+		%GameOver.show()
 	else:
 		%GameOver.hide()
 	%ResultText.text = "[wave amp=50.0 freq=5.0 connected=1]Player " + str(player_id) + " has won![/wave]"
 
 func start_game():
 	GameManager.start_game()
+	
+	GameManager.score_needed = int(score_input.text)
+	GameManager.BOARD_WIDTH = int(grid_x_input.text)
+	GameManager.BOARD_HEIGHT = int(grid_y_input.text)
+	
+	print(GameManager.score_needed)
+	print(GameManager.BOARD_WIDTH)
+	print(GameManager.BOARD_HEIGHT)
 
 func restart_game():
 	GameManager.state_chart.send_event("restart_game")
+
+
+func _on_score_sub_pressed() -> void:
+	score_input.text = str(int(score_input.text) - 1)
+
+func _on_score_add_pressed() -> void:
+	score_input.text = str(int(score_input.text) + 1)

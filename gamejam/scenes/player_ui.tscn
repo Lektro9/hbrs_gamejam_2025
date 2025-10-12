@@ -101,5 +101,74 @@ size_flags_vertical = 2
 theme_override_font_sizes/font_size = 32
 text = "Start game"
 
+[node name="Game Settings" type="VBoxContainer" parent="MainMenu"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1214.0
+offset_top = 455.0
+offset_right = 1371.0
+offset_bottom = 610.0
+
+[node name="ScoreLabel" type="Label" parent="MainMenu/Game Settings"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Score needed to win:"
+
+[node name="ScoreContainer" type="HBoxContainer" parent="MainMenu/Game Settings"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ScoreSub" type="Button" parent="MainMenu/Game Settings/ScoreContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "-"
+
+[node name="ScoreInput" type="LineEdit" parent="MainMenu/Game Settings/ScoreContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "20"
+placeholder_text = "Enter Score"
+
+[node name="ScoreAdd" type="Button" parent="MainMenu/Game Settings/ScoreContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "+
+"
+
+[node name="GridSizeLabel" type="Label" parent="MainMenu/Game Settings"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Grid Size:"
+
+[node name="GridX" type="HBoxContainer" parent="MainMenu/Game Settings"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="GridXLabel" type="Label" parent="MainMenu/Game Settings/GridX"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "X"
+
+[node name="GridXInput" type="LineEdit" parent="MainMenu/Game Settings/GridX"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "8"
+
+[node name="GridY" type="HBoxContainer" parent="MainMenu/Game Settings"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="GridYLabel" type="Label" parent="MainMenu/Game Settings/GridY"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Y"
+
+[node name="GridYInput" type="LineEdit" parent="MainMenu/Game Settings/GridY"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "8"
+
 [connection signal="pressed" from="GameOver/RestartGame" to="." method="restart_game"]
 [connection signal="pressed" from="MainMenu/Vbox/StartGame" to="." method="start_game"]
+[connection signal="pressed" from="MainMenu/Game Settings/ScoreContainer/ScoreSub" to="." method="_on_score_sub_pressed"]
+[connection signal="pressed" from="MainMenu/Game Settings/ScoreContainer/ScoreAdd" to="." method="_on_score_add_pressed"]
