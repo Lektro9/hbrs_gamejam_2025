@@ -176,6 +176,19 @@ func drop_chip(chip: ChipInstance, col_num: int):
 		c.assign_chip(chip)
 	
 	update_board_state()
+	
+	# 
+	if chip.ability != null:
+		var ctx := Ability.AbilityContext.new()
+		ctx.board = self
+		ctx.cell = c
+		ctx.chip = chip.ChipResource
+		ctx.rng = RandomNumberGenerator.new()
+		ctx.active_player = chip.player_id
+
+		var fx = chip.ability.compute_effects(ctx)
+		
+		resolve_effects(fx)
 
 
 ## BFS cluster search
@@ -277,6 +290,46 @@ func get_team_scores() -> Dictionary[Chip.Ownership, int]:
 		Chip.Ownership.PLAYER_ONE: score1,
 		Chip.Ownership.PLAYER_TWO: score2
 	}
+	
+# board_resolver.gd (oder Teil von GameBoardData)
+func resolve_effects(effects: Array[Effect]) -> void:
+	if effects.is_empty():
+		return
+
+	# 1) Ordnung erzwingen
+	var destroy := effects.filter(func(e): return e.kind == Effect.Kind.DESTROY_CELL)
+	var recolor := effects.filter(func(e): return e.kind == Effect.Kind.RECOLOR_CELL)
+	var swap    := effects.filter(func(e): return e.kind == Effect.Kind.SWAP_CELLS)
+	var spawn   := effects.filter(func(e): return e.kind == Effect.Kind.SPAWN_CHIP)
+	var custom  := effects.filter(func(e): return e.kind == Effect.Kind.CUSTOM)
+
+	# 2) Ausführen
+	for e in destroy:
+		var c := get_board_cell(e.pos_a)
+		if c and c.has_chip():
+			c.chip = null
+
+	for e in recolor:
+		var c := get_board_cell(e.pos_a)
+		if c and c.has_chip():
+			c.chip.player_id = int(e.payload.get("owner", c.chip.player_id))
+
+	for e in swap:
+		var a := get_board_cell(e.pos_a)
+		var b := get_board_cell(e.pos_b)
+		if a and b:
+			var tmp = b.chip
+			b.chip = a.chip
+			a.chip = tmp
+
+	for e in spawn:
+		var c := get_board_cell(e.pos_a)
+		if c and not c.has_chip():
+			c.chip = e.payload.get("chip", null)
+
+	# 3) Physik + Cluster (einmal pro “Welle”)
+	update_board_state()  # deine Gravity + clusters/emit
+
 
 func debug_print():
 	var out := "\n"
