@@ -45,9 +45,13 @@ func start_falling(start_position: float) -> void:
 	fall_tween = _kill_tween(fall_tween)
 	container.position.y = - start_position
 	fall_tween = container.create_tween()
-	fall_tween.set_trans(Tween.TRANS_CUBIC)
+	fall_tween.set_trans(Tween.TRANS_EXPO)
+	fall_tween.set_ease(Tween.EASE_IN)
+	fall_tween.tween_property(container, "position:y", 6.0, 0.26)
+	fall_tween.set_trans(Tween.TRANS_BACK)
 	fall_tween.set_ease(Tween.EASE_OUT)
-	fall_tween.tween_property(container, "position:y", 0.0, 0.35)
+	fall_tween.tween_property(container, "position:y", -60.0, 0.1)
+	fall_tween.tween_property(container, "position:y", 0.0, 0.08).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	fall_tween.finished.connect(_on_drop_landed)
 	already_animated = true
 
