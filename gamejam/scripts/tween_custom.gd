@@ -12,6 +12,7 @@ class_name TweenCustom extends Node
 @export var shouldLooping: bool = true
 @export var shouldAnimateToInitial = true
 
+var tween
 var target;
 
 func _ready():
@@ -26,7 +27,7 @@ func start_tween():
 		start_tween_method()
 		return
 		
-	var tween = target.create_tween()
+	tween = target.create_tween()
 	tween.set_ease(ease_type)
 	tween.set_trans(transition_type)
 	if shouldLooping:
@@ -50,7 +51,7 @@ func start_tween_method():
 	if not target.has_method(methodName):
 		push_error("Name of method is invalid")
 		return
-	var tween = target.create_tween()
+	tween = target.create_tween()
 	
 	tween.set_ease(ease_type)
 	tween.set_trans(transition_type)

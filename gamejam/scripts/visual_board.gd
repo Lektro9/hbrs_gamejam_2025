@@ -47,24 +47,19 @@ func _draw_empty_board():
 func _draw_board():
 	# Clear old sprites if needed
 	for child in filled_grid_container.get_children():
-		child.queue_free()
+		filled_grid_container.remove_child(child)
 
 	var total_size = Vector2(grid_size.x - 1, grid_size.y - 1) * cell_size
 	var origin = -total_size * 0.5  # center the grid
 
 	for y in range(grid_size.y):
 		for x in range(grid_size.x):
-			var sprite = Sprite2D.new()
 			var chip: ChipInstance = GameManager.game_board.board_cells.get(Vector2i(x, y)).chip
 			if chip != null:
-				sprite.texture = chip.ChipResource.icon
-				sprite.modulate = chip.color
-			else:
-				sprite.texture = empty_texture
+				chip.position = origin + Vector2(x, grid_size.y - 1 - y) * cell_size
+				filled_grid_container.add_child(chip)
+				chip.start_falling(grid_size.y * cell_size.y)
 				
-				
-			sprite.position = origin + Vector2(x, grid_size.y - 1 - y) * cell_size
-			filled_grid_container.add_child(sprite)
 
 func drop_chip(column: int):
 	GameManager.drop_chip(column)

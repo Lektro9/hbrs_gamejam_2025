@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://dimvdouy8g0sv" path="res://addons/phantom_camera/scripts/resources/phantom_camera_noise_2d.gd" id="7_tipki"]
 [ext_resource type="AudioStream" uid="uid://biim3ad1jrpl3" path="res://audio/swing_bg.mp3" id="8_tipki"]
 [ext_resource type="PackedScene" uid="uid://brl0maa4m6fvo" path="res://scenes/visual_board.tscn" id="9_85g3d"]
-[ext_resource type="Script" uid="uid://b83sx6pepiwf0" path="res://scripts/effects_manager.gd" id="10_fx"]
+[ext_resource type="Script" path="res://scripts/effects_manager.gd" id="10_fx"]
 [ext_resource type="PackedScene" uid="uid://d04oak74u5og1" path="res://scenes/menu_bg.tscn" id="11_ya4ey"]
 
 [sub_resource type="Resource" id="Resource_tipki"]
@@ -25,8 +25,8 @@ metadata/_custom_type_script = "uid://dimvdouy8g0sv"
 [node name="Main" type="Node2D"]
 
 [node name="MenuBg" parent="." instance=ExtResource("11_ya4ey")]
-position = Vector2(1, 627)
-scale = Vector2(1.326273, 1.326273)
+position = Vector2(1, 598.00006)
+scale = Vector2(1.251, 1.251)
 
 [node name="VersionLabel" parent="." instance=ExtResource("5_tbgi4")]
 
@@ -75,7 +75,6 @@ parameters/looping = true
 [node name="AudioStreamSFX" type="AudioStreamPlayer2D" parent="."]
 unique_name_in_owner = true
 max_polyphony = 32
-bus = &"SFX"
 
 [node name="VisualBoard" parent="." instance=ExtResource("9_85g3d")]
 
