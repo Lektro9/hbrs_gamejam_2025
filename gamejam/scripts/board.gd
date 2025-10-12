@@ -281,42 +281,70 @@ func get_team_clusters() -> Dictionary:
 		Chip.Ownership.PLAYER_ONE: [],
 		Chip.Ownership.PLAYER_TWO: []
 	}
-	
-	var visited := {}
+	# Track visited per team to avoid duplicates
+	var visited_by_team := {
+		Chip.Ownership.PLAYER_ONE: {},
+		Chip.Ownership.PLAYER_TWO: {}
+	}
 
 	for cell in all_chips_in_play():
-		if visited.has(cell.coords):
+		if cell == null or not cell.has_chip():
 			continue
-		
-		var cluster := get_cluster(cell)
-		
-		for c in cluster:
-			visited[c.coords] = true
-		
-		if cluster.size() >= CLUSTER_MIN_SIZE and cell.chip != null:
-			match cell.chip.player_id:
-				Chip.Ownership.PLAYER_ONE:
-					clusters_by_team[Chip.Ownership.PLAYER_ONE].append(cluster)
-				Chip.Ownership.PLAYER_TWO:
-					clusters_by_team[Chip.Ownership.PLAYER_TWO].append(cluster)
-				_:
-					pass
-	
+		var owner := cell.chip.player_id
+		if owner != Chip.Ownership.PLAYER_ONE and owner != Chip.Ownership.PLAYER_TWO:
+			continue # seed only from team-owned chips
+
+		var team := owner
+		if visited_by_team[team].has(cell.coords):
+			continue
+
+		# BFS with Mezzo wildcard connectivity
+		var cluster: Array[BoardCell] = []
+		var queue: Array[BoardCell] = [cell]
+		var seen := {}
+
+		while not queue.is_empty():
+			var cur: BoardCell = queue.pop_front()
+			if seen.has(cur.coords):
+				continue
+			seen[cur.coords] = true
+			visited_by_team[team][cur.coords] = true
+			cluster.append(cur)
+
+			for nb in get_board_cell_neighbours(cur.coords):
+				if nb != null and nb.has_chip() and not seen.has(nb.coords):
+					var inst := nb.chip
+					var is_team := inst.player_id == team
+					var is_mezzo := inst.ChipResource != null and inst.ChipResource.special_type == Chip.Specials.MEZZO
+					if is_team or is_mezzo:
+						queue.append(nb)
+
+		if cluster.size() >= CLUSTER_MIN_SIZE:
+			clusters_by_team[team].append(cluster)
+
 	return clusters_by_team
 
 
 func get_team_scores() -> Dictionary[Chip.Ownership, int]:
 	var clusters := get_team_clusters()
 	var score1 := 0
-	
 	for cl in clusters[Chip.Ownership.PLAYER_ONE]:
-		score1 += cl.size()
-		
+		var bonus := 0
+		for c in cl:
+			if c != null and c.has_chip() and c.chip.ChipResource != null and c.chip.ChipResource.special_type == Chip.Specials.MEZZO:
+				bonus = 2
+				break
+		score1 += cl.size() + bonus
+
 	var score2 := 0
-	
-	for cluster in clusters[Chip.Ownership.PLAYER_TWO]:
-		score2 += cluster.size()
-		
+	for cl in clusters[Chip.Ownership.PLAYER_TWO]:
+		var bonus2 := 0
+		for c in cl:
+			if c != null and c.has_chip() and c.chip.ChipResource != null and c.chip.ChipResource.special_type == Chip.Specials.MEZZO:
+				bonus2 = 2
+				break
+		score2 += cl.size() + bonus2
+
 	return {
 		Chip.Ownership.PLAYER_ONE: score1,
 		Chip.Ownership.PLAYER_TWO: score2
@@ -335,10 +363,11 @@ func resolve_effects(effects: Array[Effect]) -> void:
 	var spawn := effects.filter(func(e): return e.kind == Effect.Kind.SPAWN_CHIP)
 	var timer := effects.filter(func(e): return e.kind == Effect.Kind.FLAG_TIMER)
 	var custom := effects.filter(func(e): return e.kind == Effect.Kind.CUSTOM)
+	var shift := effects.filter(func(e): return e.kind == Effect.Kind.SHIFT_COLUMNS)
 
 	# Debug summary
-	print("Effects: total=%s destroy=%s recolor=%s swap=%s spawn=%s timer=%s custom=%s" % [
-		effects.size(), destroy.size(), recolor.size(), swap.size(), spawn.size(), timer.size(), custom.size()
+	print("Effects: total=%s destroy=%s recolor=%s swap=%s spawn=%s timer=%s shift=%s custom=%s" % [
+		effects.size(), destroy.size(), recolor.size(), swap.size(), spawn.size(), timer.size(), shift.size(), custom.size()
 	])
 	
 	for e in destroy:
@@ -378,6 +407,23 @@ func resolve_effects(effects: Array[Effect]) -> void:
 			var cd := int(e.payload.get("countdown", c.chip.timer_countdown))
 			c.chip.timer_countdown = cd
 			timer_flagged.emit(e.pos_a, cd)
+
+	# Apply column shifts (wrap-right)
+	for e in shift:
+		var delta := int(e.payload.get("delta", 1))
+		# normalize shift to [0, BOARD_WIDTH)
+		var sh := ((delta % BOARD_WIDTH) + BOARD_WIDTH) % BOARD_WIDTH
+		if sh == 0:
+			continue
+		for y in BOARD_HEIGHT:
+			var row := []
+			for x in BOARD_WIDTH:
+				row.append(get_board_cell_by_coords(x, y).chip)
+			for x in BOARD_WIDTH:
+				var src_x := (x - sh) % BOARD_WIDTH
+				if src_x < 0:
+					src_x += BOARD_WIDTH
+				get_board_cell_by_coords(x, y).chip = row[src_x]
 
 	# 3) Physik + Cluster (einmal pro “Welle”)
 	update_board_state() # deine Gravity + clusters/emit
@@ -453,6 +499,12 @@ func debug_print():
 						special_marker = "P"
 					Chip.Specials.TIMER:
 						special_marker = "T"
+					Chip.Specials.KOMBUCHA:
+						special_marker = "K"
+					Chip.Specials.SHIFTER:
+						special_marker = "S"
+					Chip.Specials.MEZZO:
+						special_marker = "M"
 					_:
 						special_marker = "*"
 				

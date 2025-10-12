@@ -23,8 +23,8 @@ func _init_board():
 		empty_board[x] = []
 		filled_board[x] = []
 		for y in range(grid_size.y):
-			empty_board[x].append(0)  # all empty at start
-			filled_board[x].append(0)  # all empty at start
+			empty_board[x].append(0) # all empty at start
+			filled_board[x].append(0) # all empty at start
 
 func _ready():
 	GameManager.init_visual_board.connect(init_visual_board)
@@ -35,7 +35,7 @@ func _draw_empty_board():
 		child.queue_free()
 
 	var total_size = Vector2(grid_size.x - 1, grid_size.y - 1) * cell_size
-	var origin = -total_size * 0.5  # center the grid
+	var origin = - total_size * 0.5 # center the grid
 
 	for y in range(grid_size.y):
 		for x in range(grid_size.x):
@@ -51,7 +51,7 @@ func _draw_board():
 		filled_grid_container.remove_child(child)
 
 	var total_size = Vector2(grid_size.x - 1, grid_size.y - 1) * cell_size
-	var origin = -total_size * 0.5  # center the grid
+	var origin = - total_size * 0.5 # center the grid
 
 	for y in range(grid_size.y):
 		for x in range(grid_size.x):
@@ -75,6 +75,9 @@ func init_visual_board():
 		
 	_init_board()
 	_draw_empty_board()
+	# Auto-redraw when board updates (effects like recolor, destroy, shift)
+	if not GameManager.game_board.board_updated.is_connected(_draw_board):
+		GameManager.game_board.board_updated.connect(_draw_board)
 	_draw_board()
 
 func spawn_column_areas():
@@ -83,14 +86,14 @@ func spawn_column_areas():
 		col_area.column_index = x
 		#TODO refactor
 		var total_size = Vector2(grid_size.x - 1, grid_size.y - 1) * cell_size
-		var origin = -total_size * 0.5  # center the grid
+		var origin = - total_size * 0.5 # center the grid
 		#TODO end
-		col_area.position = origin + Vector2(x, grid_size.y/2.0 - 0.5) * cell_size
+		col_area.position = origin + Vector2(x, grid_size.y / 2.0 - 0.5) * cell_size
 		col_area.column_size = Vector2(cell_size.x, cell_size.y * grid_size.y)
 		column_container.add_child(col_area)
 		
 func get_cell_world_position(x: int, y: int) -> Vector2:
 	var total_size = Vector2(grid_size.x - 1, grid_size.y - 1) * cell_size
-	var origin = -total_size * 0.5  # center the grid
+	var origin = - total_size * 0.5 # center the grid
 	var local_pos = origin + Vector2(x, grid_size.y - 1 - y) * cell_size
 	return empty_grid_container.to_global(local_pos)

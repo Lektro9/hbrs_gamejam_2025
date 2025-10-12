@@ -80,7 +80,7 @@ func _on_drop_chip_state_entered() -> void:
 	print("Player 1 has: " + str(player_1.score))
 	print("Player 2 has: " + str(player_2.score))
 
-func _on_check_win_state_entered() -> void:	
+func _on_check_win_state_entered() -> void:
 	if game_board.all_chips_in_play().size() >= BOARD_HEIGHT * BOARD_WIDTH:
 		state_chart.send_event("draw_game")
 	if player_1.score >= score_needed && player_2.score >= score_needed:
@@ -110,23 +110,32 @@ func _on_player_turn_state_entered() -> void:
 	var current_player = get_player()
 	var current_chip: ChipInstance = CHIP_INSTANCE.instantiate()
 
-	# Create a per-chip resource instance to safely mutate specials
+	# Create per-chip resource; 20% special chance, weighted across 6 specials:
+	# Explode 30, Paint 30, Timer 20, Kombucha 10, Shifter 7, Mezzo 3
 	var chip_res: Chip = DEFAULT_CHIP.duplicate(true)
-	# 20% chance to be special with weights Explode 40, Paint 40, Timer 20
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
-	var is_special := rng.randi_range(1, 100) <= 20
+	var is_special := rng.randi_range(1, 100) <= 40
 	if is_special:
 		var roll := rng.randi_range(1, 100)
-		if roll <= 40:
+		if roll <= 17:
 			chip_res.special_type = Chip.Specials.EXPLODE
 			chip_res.ability = AbilityExplode.new()
-		elif roll <= 80:
+		elif roll <= 34:
 			chip_res.special_type = Chip.Specials.PAINT
 			chip_res.ability = AbilityPaint.new()
-		else:
+		elif roll <= 51:
 			chip_res.special_type = Chip.Specials.TIMER
 			chip_res.ability = AbilityTimer.new()
+		elif roll <= 68:
+			chip_res.special_type = Chip.Specials.KOMBUCHA
+			chip_res.ability = AbilityKombucha.new()
+		elif roll <= 85:
+			chip_res.special_type = Chip.Specials.SHIFTER
+			chip_res.ability = AbilityColumnShift.new()
+		else:
+			chip_res.special_type = Chip.Specials.MEZZO
+			chip_res.ability = null # passive wildcard
 	else:
 		chip_res.special_type = Chip.Specials.NORMAL
 		chip_res.ability = null
