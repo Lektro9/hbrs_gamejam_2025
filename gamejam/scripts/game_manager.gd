@@ -18,6 +18,8 @@ var game_board: GameBoardData
 var does_player_one_play = true # true for player 1, false for player 2
 var chosen_column: int
 var score_needed: int = 4
+var BOARD_HEIGHT: int = 6
+var BOARD_WIDTH: int = 7
 
 func _ready() -> void:
 	if not OS.is_debug_build():
@@ -56,7 +58,7 @@ func _on_init_state_entered() -> void:
 	show_score_board.emit(false)
 	game_over.emit(get_player().player_id, false)
 	does_player_one_play = true
-	game_board = GameBoardData.new(6, 7)
+	game_board = GameBoardData.new(BOARD_HEIGHT, BOARD_WIDTH)
 	var scores := game_board.get_team_scores()
 	update_player_score.emit(scores)
 	init_visual_board.emit()
