@@ -4,6 +4,7 @@ class_name EffectsManager
 var _board: GameBoardData = null
 @onready var screen_shake: PhantomCameraNoiseEmitter2D = %ScreenShake
 @onready var sfx_stream: AudioStreamPlayer2D = %AudioStreamSFX
+@onready var visual_board: VisualBoard = %VisualBoard
 var SFX_CHIP_DROP: AudioStream = preload("res://audio/chip_drop.mp3")
 var SFX_RECOLOR: AudioStream = preload("res://audio/paint_splash.wav")
 var SFX_DESTROY_VARIANTS: Array = [
@@ -12,6 +13,8 @@ var SFX_DESTROY_VARIANTS: Array = [
 var SFX_TIMER_EXPLODE: AudioStream = preload("res://audio/medium_explosion.wav")
 
 var SFX_GAME_OVER: AudioStream = preload("res://audio/yay.mp3")
+
+var VFX_PARTICLE_EXPLOSION = preload("res://effects/particle_explosion.tscn")
 
 func _ready():
 	if Engine.is_editor_hint():
@@ -142,7 +145,13 @@ func sfx_on_game_over(_winner: int, _show_win_screen: bool):
 
 # VFX
 func vfx_on_cell_destroyed(_pos: Vector2i, _owner_before: int):
-	_board.get_board_cell(_pos)
+	var pos := visual_board.get_cell_world_position(_pos.x, _pos.y)
+
+	var particle_explosion: GPUParticles2D = VFX_PARTICLE_EXPLOSION.instantiate()
+
+	particle_explosion.global_position = pos
+
+	add_child(particle_explosion)
 
 #func sfx_on_timer_exploded(_center: Vector2i, _destroyed_positions: Array) -> void:
 	#if sfx_stream == null:
