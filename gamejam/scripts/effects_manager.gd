@@ -5,6 +5,13 @@ var _board: GameBoardData = null
 @onready var screen_shake: PhantomCameraNoiseEmitter2D = %ScreenShake
 @onready var _visual_board: Node2D = %VisualBoard
 @onready var _grid_container: Node2D = %VisualBoard/GridContainer
+@onready var sfx_stream: AudioStreamPlayer2D = %AudioStreamSFX
+var SFX_CHIP_DROP: AudioStream = preload("res://audio/chip_drop.mp3")
+var SFX_RECOLOR: AudioStream = preload("res://audio/paint_splash.wav")
+var SFX_DESTROY_VARIANTS: Array = [
+	preload("res://audio/small_explosion.wav")
+]
+var SFX_TIMER_EXPLODE: AudioStream = preload("res://audio/medium_explosion.wav")
 
 func _ready():
 	if Engine.is_editor_hint():
@@ -87,19 +94,7 @@ func shake_strong() -> void:
 	screen_shake.decay_time = 0.32
 	screen_shake.emit()
 
-# SFX helpers
-func _get_sfx_player() -> AudioStreamPlayer2D:
-	# Prefer autoload or singleton path
-	if has_node("/root/AudioStreamSFX"):
-		var n := get_node("/root/AudioStreamSFX")
-		if n is AudioStreamPlayer2D:
-			return n
-	# Fallback: search by name in the scene tree
-	var node := get_tree().get_root().find_child("AudioStreamSFX", true, false)
-	if node != null and node is AudioStreamPlayer2D:
-		return node
-	return null
-
+# Helpers
 func _board_coords_to_global(coords: Vector2i) -> Vector2:
 	if _visual_board == null:
 		return Vector2.ZERO
@@ -112,24 +107,35 @@ func _board_coords_to_global(coords: Vector2i) -> Vector2:
 		return _grid_container.to_global(local_in_grid)
 	return _visual_board.to_global(local_in_grid)
 
-func _play_sfx_at_board_coords(coords: Vector2i) -> void:
-	var sfx := _get_sfx_player()
-	if sfx == null:
-		return
-	sfx.global_position = _board_coords_to_global(coords)
-	# The current stream on the singleton will be used
-	sfx.play()
 
 # SFX
 func sfx_on_chip_dropped(_chip: ChipInstance, _column: int, _coords: Vector2i) -> void:
-	_play_sfx_at_board_coords(_coords)
+	if sfx_stream == null:
+		return
+	sfx_stream.stream = SFX_CHIP_DROP
+	#sfx_stream.global_position = _board_coords_to_global(_coords)
+	sfx_stream.play()
 
 func sfx_on_cell_recolored(_pos: Vector2i, _owner_before: int, _owner_after: int) -> void:
-	_play_sfx_at_board_coords(_pos)
+	if sfx_stream == null:
+		return
+	sfx_stream.stream = SFX_RECOLOR
+	#sfx_stream.global_position = _board_coords_to_global(_pos)
+	sfx_stream.play()
 
 func sfx_on_cell_destroyed(_pos: Vector2i, _owner_before: int) -> void:
-	_play_sfx_at_board_coords(_pos)
+	if sfx_stream == null:
+		return
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	var idx := rng.randi_range(0, SFX_DESTROY_VARIANTS.size() - 1)
+	sfx_stream.stream = SFX_DESTROY_VARIANTS[idx]
+	#sfx_stream.global_position = _board_coords_to_global(_pos)
+	sfx_stream.play()
 
 func sfx_on_timer_exploded(_center: Vector2i, _destroyed_positions: Array) -> void:
-	# Play from the chip that triggered the explosion
-	_play_sfx_at_board_coords(_center)
+	if sfx_stream == null:
+		return
+	sfx_stream.stream = SFX_TIMER_EXPLODE
+	#sfx_stream.global_position = _board_coords_to_global(_center)
+	sfx_stream.play()
