@@ -8,4 +8,5 @@ enum Specials {NORMAL = 0, EXPLODE, PAINT, MAGNET, LINK, TIMER, KOMBUCHA, SHIFTE
 @export var special_type: Specials = Specials.NORMAL
 @export var chip_value: int = 1
 
-@export var ability = null
+@export var ability: Ability = null
+@export var description: String = ""
