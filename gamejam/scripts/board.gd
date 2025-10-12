@@ -316,7 +316,7 @@ func get_team_clusters() -> Dictionary:
 					var inst := nb.chip
 					var is_team := inst.player_id == team
 					var is_mezzo := inst.ChipResource != null and inst.ChipResource.special_type == Chip.Specials.MEZZO
-					if is_team or is_mezzo:
+					if is_team: # or is_mezzo:
 						queue.append(nb)
 
 		if cluster.size() >= CLUSTER_MIN_SIZE:
