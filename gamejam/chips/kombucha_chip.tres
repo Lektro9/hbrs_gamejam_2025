@@ -14,6 +14,6 @@ script = ExtResource("2_v15xm")
 icon = ExtResource("2_dcxcw")
 special_type = 6
 ability = SubResource("Resource_k4u0j")
-description = "*LESS BOOM*\\n\\nDestroys all chips underneath"
+description = "*LESS BOOM*[br][/br]Destroys all chips underneath"
 letter = ExtResource("3_dcxcw")
 metadata/_custom_type_script = "uid://dp7rx7emxm1ns"

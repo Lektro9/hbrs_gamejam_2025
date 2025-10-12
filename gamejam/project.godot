@@ -30,6 +30,12 @@ window/stretch/mode="viewport"
 
 enabled=PackedStringArray("res://addons/godot_state_charts/plugin.cfg", "res://addons/phantom_camera/plugin.cfg")
 
+[importer_defaults]
+
+font_data_dynamic={
+&"antialiasing": 0
+}
+
 [input]
 
 hit={

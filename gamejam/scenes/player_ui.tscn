@@ -1,9 +1,20 @@
-[gd_scene load_steps=4 format=3 uid="uid://bb4bqi8ghs0su"]
+[gd_scene load_steps=8 format=3 uid="uid://bb4bqi8ghs0su"]
 
 [ext_resource type="Script" uid="uid://gt2igi5lslwk" path="res://scripts/player_ui.gd" id="1_jkj6h"]
 [ext_resource type="Theme" uid="uid://c3bfsu14hvt5x" path="res://global_theme.tres" id="2_sk4pr"]
+[ext_resource type="FontFile" uid="uid://qoynv5cogvo4" path="res://fonts/Candy Beans.otf" id="3_8isll"]
+[ext_resource type="Script" uid="uid://b5e23anh0po0y" path="res://scripts/film_grain_noise.gd" id="3_48xfa"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_48xfa"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_48xfa"]
+radius = 60.074955
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_8isll"]
+frequency = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7ctsh"]
+width = 1280
+height = 720
+noise = SubResource("FastNoiseLite_8isll")
 
 [node name="PlayerUI" type="CanvasLayer"]
 script = ExtResource("1_jkj6h")
@@ -23,8 +34,11 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(500, 150)
 layout_mode = 2
 size_flags_vertical = 0
+theme_override_colors/default_color = Color(0.8258557, 0.14136526, 0.18923174, 1)
+theme_override_constants/outline_size = 10
 theme_override_font_sizes/normal_font_size = 72
-text = "Player 1: 0"
+text = "1: 0"
+horizontal_alignment = 2
 
 [node name="Player2Score" type="RichTextLabel" parent="ScoreBoard"]
 unique_name_in_owner = true
@@ -32,8 +46,10 @@ custom_minimum_size = Vector2(500, 150)
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 0
+theme_override_colors/default_color = Color(0.21561567, 0.45029113, 0.819067, 1)
+theme_override_constants/outline_size = 10
 theme_override_font_sizes/normal_font_size = 72
-text = "Player 2: 0"
+text = "2: 0"
 
 [node name="GameOver" type="VBoxContainer" parent="."]
 unique_name_in_owner = true
@@ -90,6 +106,7 @@ custom_minimum_size = Vector2(800, 150)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 10
+theme_override_constants/outline_size = 10
 theme_override_font_sizes/normal_font_size = 72
 theme_override_font_sizes/bold_font_size = 72
 bbcode_enabled = true
@@ -178,48 +195,52 @@ offset_top = 171.0
 offset_right = 62.0
 offset_bottom = 211.0
 
-[node name="SpawnMarker" type="Marker2D" parent="NextChipContainer"]
-unique_name_in_owner = true
-position = Vector2(41, 87)
-scale = Vector2(0.99999994, 0.99999994)
-
-[node name="Area2D" type="Area2D" parent="NextChipContainer"]
-unique_name_in_owner = true
-position = Vector2(40, 85)
-scale = Vector2(5.323825, -5.3847847)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="NextChipContainer/Area2D"]
-unique_name_in_owner = true
-shape = SubResource("RectangleShape2D_48xfa")
-
-[node name="HoverPanel" type="Panel" parent="NextChipContainer/Area2D"]
-unique_name_in_owner = true
-offset_right = 40.0
-offset_bottom = 40.0
-scale = Vector2(1.0676208, -0.6862326)
-
-[node name="ChipDesc" type="RichTextLabel" parent="NextChipContainer/Area2D/HoverPanel"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 1.9353156
-offset_top = 2.7061996
-offset_right = 243.93532
-offset_bottom = 50.7062
-scale = Vector2(0.10982784, 0.20405564)
-bbcode_enabled = true
-text = "This is my text"
-
 [node name="NextChip" type="Label" parent="NextChipContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("2_sk4pr")
+theme_override_constants/outline_size = 10
 text = "Next Chip:"
+
+[node name="SpawnMarker" type="Marker2D" parent="NextChipContainer"]
+unique_name_in_owner = true
+position = Vector2(41, 99)
+
+[node name="Area2D" type="Area2D" parent="NextChipContainer"]
+unique_name_in_owner = true
+position = Vector2(41, 100)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="NextChipContainer/Area2D"]
+unique_name_in_owner = true
+shape = SubResource("CircleShape2D_48xfa")
+
+[node name="Panel" type="Panel" parent="."]
+offset_left = 62.0
+offset_top = 270.0
+offset_right = 102.0
+offset_bottom = 310.0
+
+[node name="ChipDesc" type="RichTextLabel" parent="Panel"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme = ExtResource("2_sk4pr")
+theme_override_fonts/normal_font = ExtResource("3_8isll")
+theme_override_font_sizes/normal_font_size = 12
+bbcode_enabled = true
+text = "texttefa "
+
+[node name="TextureRect" type="TextureRect" parent="."]
+modulate = Color(1, 1, 1, 0.105882354)
+z_index = 10
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+texture = SubResource("NoiseTexture2D_7ctsh")
+script = ExtResource("3_48xfa")
 
 [connection signal="pressed" from="GameOver/RestartGame" to="." method="restart_game"]
 [connection signal="pressed" from="MainMenu/Vbox/StartGame" to="." method="start_game"]
 [connection signal="pressed" from="MainMenu/Game Settings/ScoreContainer/ScoreSub" to="." method="_on_score_sub_pressed"]
 [connection signal="pressed" from="MainMenu/Game Settings/ScoreContainer/ScoreAdd" to="." method="_on_score_add_pressed"]
-[connection signal="mouse_entered" from="NextChipContainer" to="." method="_on_next_chip_container_mouse_entered"]
-[connection signal="mouse_exited" from="NextChipContainer" to="." method="_on_next_chip_container_mouse_exited"]
-[connection signal="mouse_entered" from="NextChipContainer/Area2D" to="." method="_on_area_2d_mouse_entered"]
-[connection signal="mouse_exited" from="NextChipContainer/Area2D" to="." method="_on_area_2d_mouse_exited"]
