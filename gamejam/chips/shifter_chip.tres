@@ -14,6 +14,6 @@ script = ExtResource("2_jyuwo")
 icon = ExtResource("2_0634p")
 special_type = 7
 ability = SubResource("Resource_vrogi")
-description = "[p]*shwoop*[/p][p]Shifts all chips one to the right[/p]"
+description = "[p]Column Shifter Brew Cap![/p][hr][p]*shwoop*[/p][p]Shifts all chips one to the right[/p]"
 letter = ExtResource("3_0634p")
 metadata/_custom_type_script = "uid://dp7rx7emxm1ns"

@@ -14,6 +14,6 @@ script = ExtResource("2_p2mnn")
 icon = ExtResource("2_qvs5j")
 special_type = 2
 ability = SubResource("Resource_p2mnn")
-description = "[p]*splash*[/p][p]Paints all adjacent chips in the color of its owner[/p]"
+description = "[p]Heavily Dyed American Soda Cap![/p][hr][p]*splash*[/p][p]Paints all adjacent chips in the color of its owner[/p]"
 letter = ExtResource("3_qvs5j")
 metadata/_custom_type_script = "uid://dp7rx7emxm1ns"
