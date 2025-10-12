@@ -57,20 +57,16 @@ func _draw_board():
 		for x in range(grid_size.x):
 			var chip: ChipInstance = GameManager.game_board.board_cells.get(Vector2i(x, y)).chip
 			if chip != null:
-                var sprite := Sprite2D.new()
-				sprite.texture = chip.ChipResource.icon
+				var sprite := Sprite2D.new()
 				if chip.player_id == 1:
 					sprite.modulate = GameManager.player_1.color
 				else:
 					sprite.modulate = GameManager.player_2.color
-                chip.sprite_2d = sprite
-                
+				chip.sprite_2d = sprite
+				
 				chip.position = origin + Vector2(x, grid_size.y - 1 - y) * cell_size
 				filled_grid_container.add_child(chip)
 				chip.start_falling(grid_size.y * cell_size.y)
-			else:
-				sprite.texture = empty_texture
-				
 
 func drop_chip(column: int):
 	GameManager.drop_chip(column)
