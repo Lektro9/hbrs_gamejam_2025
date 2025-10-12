@@ -22,8 +22,8 @@ func _ready() -> void:
 func update_score_labels(scores):
 	var p1_score = scores.get(Chip.Ownership.PLAYER_ONE)
 	var p2_score = scores.get(Chip.Ownership.PLAYER_TWO)
-	player_1_score.text = "1: " + str(p1_score)
-	player_2_score.text = "2: " + str(p2_score)
+	player_1_score.set_final_value(p1_score)
+	player_2_score.set_final_value(p2_score)
 
 func set_up_game_over(player_id: int, shouldShow: bool):
 	if shouldShow:
@@ -49,6 +49,8 @@ func _on_score_add_pressed() -> void:
 
 func update_chip_label(chip: ChipInstance) -> void:
 	var double = chip.duplicate()
+	for child in %SpawnMarker.get_children():
+		child.queue_free()
 	%SpawnMarker.add_child(double)
 	chip_desc.text = double.ChipResource.description
 	pass

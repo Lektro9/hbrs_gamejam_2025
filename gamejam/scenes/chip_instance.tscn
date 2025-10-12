@@ -31,3 +31,12 @@ auto_start = false
 shouldLooping = false
 shouldAnimateToInitial = false
 metadata/_custom_type_script = "uid://dgxsv22bfkq2x"
+
+[node name="ClusterTween" type="Node" parent="Container"]
+unique_name_in_owner = true
+script = ExtResource("4_tdb0c")
+property_name = "position:x"
+final_value = 10.0
+duration = 0.2
+auto_start = false
+metadata/_custom_type_script = "uid://dgxsv22bfkq2x"

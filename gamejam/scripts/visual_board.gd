@@ -42,6 +42,7 @@ func _draw_empty_board():
 			var sprite = Sprite2D.new()
 			sprite.texture = empty_texture
 			sprite.position = origin + Vector2(x, grid_size.y - 1 - y) * cell_size
+			sprite.modulate = Color(0.004, 0.245, 0.266, 1.0)
 			empty_grid_container.add_child(sprite)
 
 
@@ -55,10 +56,13 @@ func _draw_board():
 
 	for y in range(grid_size.y):
 		for x in range(grid_size.x):
-			var chip: ChipInstance = GameManager.game_board.board_cells.get(Vector2i(x, y)).chip
+			var cell: BoardCell = GameManager.game_board.board_cells.get(Vector2i(x, y))
+			var chip: ChipInstance = cell.chip
 			if chip == null:
 				continue
-
+				
+			chip.is_in_cluster = cell.is_in_cluster
+			
 			# Only add chip to container if it's not already parented
 			if chip.get_parent() != filled_grid_container:
 				filled_grid_container.add_child(chip)

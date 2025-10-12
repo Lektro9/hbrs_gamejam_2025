@@ -10,11 +10,11 @@ empty_texture = ExtResource("2_bycon")
 [node name="GridContainer" type="Node2D" parent="."]
 scale = Vector2(0.5, 0.5)
 
-[node name="EmptyGridContainer" type="Node2D" parent="GridContainer"]
-
 [node name="FilledGridContainer" type="Node2D" parent="GridContainer"]
 
 [node name="ColumnContainer" type="Node2D" parent="GridContainer"]
+
+[node name="EmptyGridContainer" type="Node2D" parent="GridContainer"]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
