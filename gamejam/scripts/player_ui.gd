@@ -20,11 +20,11 @@ func _ready() -> void:
 func update_score_labels(scores):
 	var p1_score = scores.get(Chip.Ownership.PLAYER_ONE)
 	var p2_score = scores.get(Chip.Ownership.PLAYER_TWO)
-	player_1_score.text = "Player1: " + str(p1_score)
-	player_2_score.text = "Player2: " + str(p2_score)
+	player_1_score.text = "1: " + str(p1_score)
+	player_2_score.text = "2: " + str(p2_score)
 
 func set_up_game_over(player_id: int, shouldShow: bool):
-	if shouldShow: 
+	if shouldShow:
 		%GameOver.show()
 	else:
 		%GameOver.hide()
