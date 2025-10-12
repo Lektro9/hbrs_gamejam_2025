@@ -15,6 +15,7 @@ const COLUMN_AREA = preload("uid://xtv2ebfyw4bp")
 var filled_board := []
 # for visual debugging
 var empty_board := []
+var _chip_positions: Dictionary = {}
 
 func _init_board():
 	filled_board.resize(grid_size.x)
@@ -25,6 +26,7 @@ func _init_board():
 		for y in range(grid_size.y):
 			empty_board[x].append(0) # all empty at start
 			filled_board[x].append(0) # all empty at start
+	_chip_positions.clear()
 
 func _ready():
 	GameManager.init_visual_board.connect(init_visual_board)
@@ -47,38 +49,62 @@ func _draw_empty_board():
 
 
 func _draw_board():
-	# Clear old sprites if needed
+	var nodes_to_cleanup: Dictionary = {}
 	for child in filled_grid_container.get_children():
-		filled_grid_container.remove_child(child)
+		if child is ChipInstance:
+			nodes_to_cleanup[child.get_instance_id()] = child
 
-	var total_size = Vector2(grid_size.x - 1, grid_size.y - 1) * cell_size
-	var origin = - total_size * 0.5 # center the grid
+	var total_size: Vector2 = Vector2(grid_size.x - 1, grid_size.y - 1) * cell_size
+	var origin: Vector2 = - total_size * 0.5 # center the grid
+	var updated_positions: Dictionary = {}
 
 	for y in range(grid_size.y):
 		for x in range(grid_size.x):
-			var cell: BoardCell = GameManager.game_board.board_cells.get(Vector2i(x, y))
+			var cell := GameManager.game_board.get_board_cell_by_coords(x, y)
+			if cell == null:
+				continue
 			var chip: ChipInstance = cell.chip
 			if chip == null:
 				continue
-				
-			chip.is_in_cluster = cell.is_in_cluster
-			
-			# Only add chip to container if it's not already parented
+
+			var target_position: Vector2 = origin + Vector2(x, grid_size.y - 1 - y) * cell_size
+			var key: int = chip.get_instance_id()
+
 			if chip.get_parent() != filled_grid_container:
 				filled_grid_container.add_child(chip)
 
-			# Ensure chip's sprite is updated to the correct color
-			if chip.sprite_2d:
-				if chip.player_id == 1:
-					chip.sprite_2d.modulate = GameManager.player_1.color
-				elif chip.player_id == 2:
-					chip.sprite_2d.modulate = GameManager.player_2.color
-				else:
-					chip.sprite_2d.modulate = Color.WHITE
+			var target_color: Color = Color.WHITE
+			match chip.player_id:
+				Chip.Ownership.PLAYER_ONE:
+					target_color = GameManager.player_1.color
+				Chip.Ownership.PLAYER_TWO:
+					target_color = GameManager.player_2.color
+				_:
+					target_color = Color.WHITE
 
-			# Update chip position
-			chip.position = origin + Vector2(x, grid_size.y - 1 - y) * cell_size
-			chip.start_falling(grid_size.y * cell_size.y)
+			if not chip.color.is_equal_approx(target_color):
+				chip.apply_player_color(target_color)
+
+			if not _chip_positions.has(key):
+				chip.position = target_position
+				chip.start_falling(grid_size.y * cell_size.y)
+			else:
+				var travel: Vector2 = target_position - chip.position
+				if travel.length() > 0.5:
+					chip.animate_to_position(target_position, travel, cell_size)
+				else:
+					chip.position = target_position
+
+			updated_positions[key] = target_position
+			nodes_to_cleanup.erase(key)
+
+	for leftover_key in nodes_to_cleanup.keys():
+		var orphan: ChipInstance = nodes_to_cleanup[leftover_key]
+		if orphan is ChipInstance:
+			orphan.queue_free()
+		_chip_positions.erase(leftover_key)
+
+	_chip_positions = updated_positions
 
 func drop_chip(column: int):
 	GameManager.drop_chip(column)
@@ -116,3 +142,22 @@ func get_cell_world_position(x: int, y: int) -> Vector2:
 	var origin = - total_size * 0.5 # center the grid
 	var local_pos = origin + Vector2(x, grid_size.y - 1 - y) * cell_size
 	return empty_grid_container.to_global(local_pos)
+
+func play_recolor_effect(pos: Vector2i, owner_after: int) -> void:
+	if GameManager.game_board == null:
+		return
+	var cell := GameManager.game_board.get_board_cell(pos)
+	if cell == null or not cell.has_chip():
+		return
+	var chip: ChipInstance = cell.chip
+	if chip == null:
+		return
+	var target_color := Color.WHITE
+	match owner_after:
+		Chip.Ownership.PLAYER_ONE:
+			target_color = GameManager.player_1.color
+		Chip.Ownership.PLAYER_TWO:
+			target_color = GameManager.player_2.color
+		_:
+			target_color = Color.WHITE
+	chip.play_recolor_flash(target_color)
