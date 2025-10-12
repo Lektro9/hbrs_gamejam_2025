@@ -120,7 +120,7 @@ func _on_player_turn_state_entered() -> void:
 	var chip_res: Chip
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
-	var is_special := rng.randi_range(1, 100) <= 40 # Chance
+	var is_special := rng.randi_range(1, 100) <= 20 # Chance
 	if is_special:
 		var roll := rng.randi_range(1, 100)
 		if roll <= 17:
