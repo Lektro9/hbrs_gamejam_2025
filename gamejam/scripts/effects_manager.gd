@@ -3,8 +3,6 @@ class_name EffectsManager
 
 var _board: GameBoardData = null
 @onready var screen_shake: PhantomCameraNoiseEmitter2D = %ScreenShake
-@onready var _visual_board: Node2D = %VisualBoard
-@onready var _grid_container: Node2D = %VisualBoard/GridContainer
 @onready var sfx_stream: AudioStreamPlayer2D = %AudioStreamSFX
 var SFX_CHIP_DROP: AudioStream = preload("res://audio/chip_drop.mp3")
 var SFX_RECOLOR: AudioStream = preload("res://audio/paint_splash.wav")
@@ -67,12 +65,16 @@ func _on_cell_destroyed(pos: Vector2i, owner_before: int) -> void:
 
 func _on_timer_exploded(center: Vector2i, destroyed_positions: Array) -> void:
 	shake_strong()
-	sfx_on_timer_exploded(center, destroyed_positions)
+	#sfx_on_timer_exploded(center, destroyed_positions)
 
 # Shake presets
 func shake_small() -> void:
 	if screen_shake == null:
 		return
+
+	screen_shake.noise.amplitude = 10
+	screen_shake.noise.frequency = 1
+
 	screen_shake.growth_time = 0.02
 	screen_shake.duration = 0.08
 	screen_shake.decay_time = 0.12
@@ -81,31 +83,26 @@ func shake_small() -> void:
 func shake_medium() -> void:
 	if screen_shake == null:
 		return
+
+	screen_shake.noise.amplitude = 50
+	screen_shake.noise.frequency = 3
+
 	screen_shake.growth_time = 0.04
-	screen_shake.duration = 0.14
+	screen_shake.duration = 0.5
 	screen_shake.decay_time = 0.2
 	screen_shake.emit()
 
 func shake_strong() -> void:
 	if screen_shake == null:
 		return
+
+	screen_shake.noise.amplitude = 75
+	screen_shake.noise.frequency = 4
+
 	screen_shake.growth_time = 0.06
-	screen_shake.duration = 0.22
+	screen_shake.duration = 0.75
 	screen_shake.decay_time = 0.32
 	screen_shake.emit()
-
-# Helpers
-func _board_coords_to_global(coords: Vector2i) -> Vector2:
-	if _visual_board == null:
-		return Vector2.ZERO
-	var cell_size: Vector2 = _visual_board.cell_size
-	var grid_size := Vector2i(GameManager.game_board.BOARD_WIDTH, GameManager.game_board.BOARD_HEIGHT)
-	var total_size = Vector2(grid_size.x - 1, grid_size.y - 1) * cell_size
-	var origin = - total_size * 0.5
-	var local_in_grid = origin + Vector2(coords.x, grid_size.y - 1 - coords.y) * cell_size
-	if _grid_container != null:
-		return _grid_container.to_global(local_in_grid)
-	return _visual_board.to_global(local_in_grid)
 
 
 # SFX
@@ -113,14 +110,12 @@ func sfx_on_chip_dropped(_chip: ChipInstance, _column: int, _coords: Vector2i) -
 	if sfx_stream == null:
 		return
 	sfx_stream.stream = SFX_CHIP_DROP
-	#sfx_stream.global_position = _board_coords_to_global(_coords)
 	sfx_stream.play()
 
 func sfx_on_cell_recolored(_pos: Vector2i, _owner_before: int, _owner_after: int) -> void:
 	if sfx_stream == null:
 		return
 	sfx_stream.stream = SFX_RECOLOR
-	#sfx_stream.global_position = _board_coords_to_global(_pos)
 	sfx_stream.play()
 
 func sfx_on_cell_destroyed(_pos: Vector2i, _owner_before: int) -> void:
@@ -130,12 +125,10 @@ func sfx_on_cell_destroyed(_pos: Vector2i, _owner_before: int) -> void:
 	rng.randomize()
 	var idx := rng.randi_range(0, SFX_DESTROY_VARIANTS.size() - 1)
 	sfx_stream.stream = SFX_DESTROY_VARIANTS[idx]
-	#sfx_stream.global_position = _board_coords_to_global(_pos)
 	sfx_stream.play()
 
-func sfx_on_timer_exploded(_center: Vector2i, _destroyed_positions: Array) -> void:
-	if sfx_stream == null:
-		return
-	sfx_stream.stream = SFX_TIMER_EXPLODE
-	#sfx_stream.global_position = _board_coords_to_global(_center)
-	sfx_stream.play()
+#func sfx_on_timer_exploded(_center: Vector2i, _destroyed_positions: Array) -> void:
+	#if sfx_stream == null:
+		#return
+	#sfx_stream.stream = SFX_TIMER_EXPLODE
+	#sfx_stream.play()

@@ -318,7 +318,7 @@ func resolve_effects(effects: Array[Effect]) -> void:
 		return
 
 	effects_resolving.emit(effects)
-	# 1) Ordnung erzwingen
+
 	var destroy := effects.filter(func(e): return e.kind == Effect.Kind.DESTROY_CELL)
 	var recolor := effects.filter(func(e): return e.kind == Effect.Kind.RECOLOR_CELL)
 	var swap := effects.filter(func(e): return e.kind == Effect.Kind.SWAP_CELLS)
@@ -330,8 +330,7 @@ func resolve_effects(effects: Array[Effect]) -> void:
 	print("Effects: total=%s destroy=%s recolor=%s swap=%s spawn=%s timer=%s custom=%s" % [
 		effects.size(), destroy.size(), recolor.size(), swap.size(), spawn.size(), timer.size(), custom.size()
 	])
-
-	# 2) Ausführen
+	
 	for e in destroy:
 		var c := get_board_cell(e.pos_a)
 		if c and c.has_chip():
@@ -405,6 +404,9 @@ func tick_timers_and_collect_effects() -> Array[Effect]:
 	# Emit aggregated tick info
 	if ticks.size() > 0:
 		timers_ticked.emit(ticks)
+
+	update_board_state()
+
 	return out
 
 
