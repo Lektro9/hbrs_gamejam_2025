@@ -33,22 +33,6 @@ size_flags_vertical = 0
 theme_override_font_sizes/normal_font_size = 72
 text = "Player 2: 0"
 
-[node name="NextChip" type="Label" parent="."]
-unique_name_in_owner = true
-offset_left = 9.0
-offset_top = 135.0
-offset_right = 182.0
-offset_bottom = 158.0
-theme = ExtResource("2_sk4pr")
-text = "Next Chip:"
-
-[node name="NCValue" type="Label" parent="NextChip"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 177.0
-offset_right = 217.0
-offset_bottom = 23.0
-
 [node name="GameOver" type="VBoxContainer" parent="."]
 unique_name_in_owner = true
 visible = false
@@ -184,6 +168,23 @@ text = "Y"
 unique_name_in_owner = true
 layout_mode = 2
 text = "8"
+
+[node name="NextChipContainer" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+offset_left = 22.0
+offset_top = 171.0
+offset_right = 62.0
+offset_bottom = 211.0
+
+[node name="NextChip" type="Label" parent="NextChipContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("2_sk4pr")
+text = "Next Chip:"
+
+[node name="SpawnMarker" type="Marker2D" parent="NextChipContainer"]
+unique_name_in_owner = true
+position = Vector2(41, 99)
 
 [connection signal="pressed" from="GameOver/RestartGame" to="." method="restart_game"]
 [connection signal="pressed" from="MainMenu/Vbox/StartGame" to="." method="start_game"]
