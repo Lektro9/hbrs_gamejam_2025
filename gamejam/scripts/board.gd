@@ -332,7 +332,7 @@ func get_team_scores() -> Dictionary[Chip.Ownership, int]:
 		var bonus := 0
 		for c in cl:
 			if c != null and c.has_chip() and c.chip.ChipResource != null and c.chip.ChipResource.special_type == Chip.Specials.MEZZO:
-				bonus = 2
+				bonus = 0
 				break
 		score1 += cl.size() + bonus
 
@@ -341,7 +341,7 @@ func get_team_scores() -> Dictionary[Chip.Ownership, int]:
 		var bonus2 := 0
 		for c in cl:
 			if c != null and c.has_chip() and c.chip.ChipResource != null and c.chip.ChipResource.special_type == Chip.Specials.MEZZO:
-				bonus2 = 2
+				bonus2 = 0
 				break
 		score2 += cl.size() + bonus2
 

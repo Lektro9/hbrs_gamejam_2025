@@ -14,6 +14,6 @@ script = ExtResource("2_e64cr")
 icon = ExtResource("2_343kj")
 special_type = 5
 ability = SubResource("Resource_psyeq")
-description = "*tick* *tick* *tick*\\n\\nExplodes after 2 full rounds"
+description = "*tick* *tick* *tick*[br][/br]Explodes after 2 full rounds"
 letter = ExtResource("3_343kj")
 metadata/_custom_type_script = "uid://dp7rx7emxm1ns"
