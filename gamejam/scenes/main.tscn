@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://qwcocqrqafx4"]
+[gd_scene load_steps=16 format=3 uid="uid://qwcocqrqafx4"]
 
 [ext_resource type="PackedScene" uid="uid://bof016octlh4" path="res://scenes/debug_menu.tscn" id="2_0wfyh"]
 [ext_resource type="PackedScene" uid="uid://bb4bqi8ghs0su" path="res://scenes/player_ui.tscn" id="3_choun"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://brl0maa4m6fvo" path="res://scenes/visual_board.tscn" id="9_85g3d"]
 [ext_resource type="Script" uid="uid://b83sx6pepiwf0" path="res://scripts/effects_manager.gd" id="10_fx"]
 [ext_resource type="PackedScene" uid="uid://d04oak74u5og1" path="res://scenes/menu_bg.tscn" id="11_ya4ey"]
+[ext_resource type="Script" uid="uid://c5gyqh06na10l" path="res://scripts/cursor.gd" id="13_trceg"]
 
 [sub_resource type="Resource" id="Resource_tipki"]
 script = ExtResource("4_tefeu")
@@ -32,12 +33,11 @@ scale = Vector2(1.251, 1.251)
 
 [node name="DebugMenu2" parent="." instance=ExtResource("2_0wfyh")]
 
-[node name="PCam2D" type="Node2D" parent="." node_paths=PackedStringArray("follow_target")]
+[node name="PCam2D" type="Node2D" parent="."]
 top_level = true
 script = ExtResource("3_tbgi4")
 priority = 10
 follow_mode = 2
-follow_target = NodePath("../VisualBoard")
 frame_preview = false
 tween_resource = SubResource("Resource_tipki")
 draw_limits = true
@@ -84,3 +84,6 @@ unique_name_in_owner = true
 [node name="EffectsManager" type="Node2D" parent="."]
 unique_name_in_owner = true
 script = ExtResource("10_fx")
+
+[node name="Cursor" type="Node2D" parent="."]
+script = ExtResource("13_trceg")

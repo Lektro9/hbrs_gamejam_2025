@@ -1,19 +1,19 @@
 [gd_resource type="Resource" script_class="Chip" load_steps=6 format=3 uid="uid://ckwb352522uuj"]
 
-[ext_resource type="Script" uid="uid://b863tftfp6qil" path="res://scripts/ability_column_shift.gd" id="1_i1440"]
+[ext_resource type="Script" uid="uid://bxsg4qk6ef3ub" path="res://scripts/ability_timer.gd" id="1_343kj"]
 [ext_resource type="Texture2D" uid="uid://dfygeen266lkx" path="res://images/neutral_chip.png" id="2_343kj"]
 [ext_resource type="Script" uid="uid://dp7rx7emxm1ns" path="res://scripts/chip.gd" id="2_e64cr"]
 [ext_resource type="Texture2D" uid="uid://c257s5anhduwl" path="res://images/chips/timer.png" id="3_343kj"]
 
-[sub_resource type="Resource" id="Resource_e64cr"]
-script = ExtResource("1_i1440")
-metadata/_custom_type_script = "uid://b863tftfp6qil"
+[sub_resource type="Resource" id="Resource_psyeq"]
+script = ExtResource("1_343kj")
+metadata/_custom_type_script = "uid://bxsg4qk6ef3ub"
 
 [resource]
 script = ExtResource("2_e64cr")
 icon = ExtResource("2_343kj")
-special_type = 7
-ability = SubResource("Resource_e64cr")
+special_type = 5
+ability = SubResource("Resource_psyeq")
 description = "*tick* *tick* *tick*\\n\\nExplodes after 2 full rounds"
 letter = ExtResource("3_343kj")
 metadata/_custom_type_script = "uid://dp7rx7emxm1ns"
