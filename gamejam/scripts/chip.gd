@@ -10,3 +10,4 @@ enum Specials {NORMAL = 0, EXPLODE, PAINT, MAGNET, LINK, TIMER, KOMBUCHA, SHIFTE
 
 @export var ability: Ability = null
 @export var description: String = ""
+@export var letter: Texture2D

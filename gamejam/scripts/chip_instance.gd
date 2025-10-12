@@ -7,15 +7,17 @@ class_name ChipInstance
 		if sprite_2d and ChipResource:
 			sprite_2d.texture = ChipResource.icon
 @export var player_id: Chip.Ownership
-@onready var sprite_2d: Sprite2D = $Sprite2D
 @export var color: Color
 @export var timer_countdown: int = -1
-@onready var tween_custom: TweenCustom = $Sprite2D/TweenCustom
 var already_animated = false
+@onready var sprite_2d: Sprite2D = $Container/Sprite2D
+@onready var tween_custom: TweenCustom = $Container/TweenCustom
+@onready var letter: Sprite2D = %Letter
 
 func _ready():
 	if ChipResource:
 		sprite_2d.texture = ChipResource.icon
+		letter.texture = ChipResource.letter
 	sprite_2d.modulate = color
 
 func start_falling(start_position: float):

@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="Chip" load_steps=3 format=3 uid="uid://d2mhdm3mamng5"]
+[gd_resource type="Resource" script_class="Chip" load_steps=4 format=3 uid="uid://d2mhdm3mamng5"]
 
 [ext_resource type="Texture2D" uid="uid://dfygeen266lkx" path="res://images/neutral_chip.png" id="1_uig8s"]
 [ext_resource type="Script" uid="uid://dp7rx7emxm1ns" path="res://scripts/chip.gd" id="2_5oxc8"]
+[ext_resource type="Texture2D" uid="uid://i38mrnabcrwt" path="res://images/chips/Mezzo.png" id="2_ot5hd"]
 
 [resource]
 script = ExtResource("2_5oxc8")
@@ -9,4 +10,5 @@ icon = ExtResource("1_uig8s")
 special_type = 8
 chip_value = 2
 description = "Counts for double points for both players"
+letter = ExtResource("2_ot5hd")
 metadata/_custom_type_script = "uid://dp7rx7emxm1ns"

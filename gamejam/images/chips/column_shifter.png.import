@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b366wyayss3nl"
-path="res://.godot/imported/bottle_cap.png-f8e10ae99cd8de18b805690448bca943.ctex"
+uid="uid://cjbr67ip8bb2j"
+path="res://.godot/imported/column_shifter.png-a5ba206537d9a737f43c093bbd5c39ea.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/main_menu/bottle_cap.png"
-dest_files=["res://.godot/imported/bottle_cap.png-f8e10ae99cd8de18b805690448bca943.ctex"]
+source_file="res://images/chips/column_shifter.png"
+dest_files=["res://.godot/imported/column_shifter.png-a5ba206537d9a737f43c093bbd5c39ea.ctex"]
 
 [params]
 

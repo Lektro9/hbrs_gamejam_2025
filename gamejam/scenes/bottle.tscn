@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://bysfchkjw0v03"]
+
+[ext_resource type="Texture2D" uid="uid://4b3jlid65cb4" path="res://images/bottle.png" id="1_qr18b"]
+[ext_resource type="Texture2D" uid="uid://b366wyayss3nl" path="res://images/bottle_cap.png" id="2_emwc0"]
+
+[node name="Bottle" type="Node2D"]
+
+[node name="Bottle" type="Sprite2D" parent="."]
+texture = ExtResource("1_qr18b")
+
+[node name="BottleCap" type="Sprite2D" parent="."]
+texture = ExtResource("2_emwc0")

@@ -1,19 +1,28 @@
-[gd_scene load_steps=5 format=3 uid="uid://dcmnbaonn5a5p"]
+[gd_scene load_steps=6 format=3 uid="uid://dcmnbaonn5a5p"]
 
-[ext_resource type="Texture2D" uid="uid://cy8cioxelycqd" path="res://images/icon.svg" id="1_0oa0q"]
 [ext_resource type="Script" uid="uid://hv0s24oxdn0n" path="res://scripts/chip_instance.gd" id="1_11x5f"]
 [ext_resource type="Resource" uid="uid://by11wc80p4n7w" path="res://chips/default_chip.tres" id="2_tdb0c"]
+[ext_resource type="Texture2D" uid="uid://dfygeen266lkx" path="res://images/neutral_chip.png" id="3_magma"]
 [ext_resource type="Script" uid="uid://dgxsv22bfkq2x" path="res://scripts/tween_custom.gd" id="4_tdb0c"]
+[ext_resource type="Texture2D" uid="uid://bi6ubnw5u7hrf" path="res://images/chips/kambutcha.png" id="5_3y2qh"]
 
 [node name="ChipInstance" type="Node2D"]
 script = ExtResource("1_11x5f")
 ChipResource = ExtResource("2_tdb0c")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(9.536743e-07, 9.536743e-07)
-texture = ExtResource("1_0oa0q")
+[node name="Container" type="Node2D" parent="."]
 
-[node name="TweenCustom" type="Node" parent="Sprite2D"]
+[node name="Sprite2D" type="Sprite2D" parent="Container"]
+modulate = Color(0.54038393, 0.011097796, 0.59836566, 1)
+position = Vector2(9.536743e-07, 9.536743e-07)
+texture = ExtResource("3_magma")
+
+[node name="Letter" type="Sprite2D" parent="Container"]
+unique_name_in_owner = true
+modulate = Color(0.83815914, 0.43194088, 1.92523e-07, 1)
+texture = ExtResource("5_3y2qh")
+
+[node name="TweenCustom" type="Node" parent="Container"]
 script = ExtResource("4_tdb0c")
 property_name = "position:y"
 transition_type = 9

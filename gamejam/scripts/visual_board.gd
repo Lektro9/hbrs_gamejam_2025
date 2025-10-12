@@ -74,6 +74,7 @@ func _draw_board():
 
 			# Update chip position
 			chip.position = origin + Vector2(x, grid_size.y - 1 - y) * cell_size
+			chip.start_falling(grid_size.y * cell_size.y)
 
 func drop_chip(column: int):
 	GameManager.drop_chip(column)
