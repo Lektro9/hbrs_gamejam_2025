@@ -117,26 +117,26 @@ func _on_player_turn_state_entered() -> void:
 	var current_chip: ChipInstance = CHIP_INSTANCE.instantiate()
 
 	# Create per-chip resource; X% special chance, weighted across 6 specials:
-	var chip_res: Chip = DEFAULT_CHIP.duplicate(true)
+	var chip_res: Chip
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
 	var is_special := rng.randi_range(1, 100) <= 40 # Chance
 	if is_special:
 		var roll := rng.randi_range(1, 100)
 		if roll <= 17:
-			chip_res = EXPLODING_CHIP
+			chip_res = EXPLODING_CHIP.duplicate(true)
 		elif roll <= 34:
-			chip_res = PAINTING_CHIP
+			chip_res = PAINTING_CHIP.duplicate(true)
 		elif roll <= 51:
-			chip_res = TIMER_CHIP
+			chip_res = TIMER_CHIP.duplicate(true)
 		elif roll <= 68:
-			chip_res = KOMBUCHA_CHIP
+			chip_res = KOMBUCHA_CHIP.duplicate(true)
 		elif roll <= 85:
-			chip_res = SHIFTER_CHIP
+			chip_res = SHIFTER_CHIP.duplicate(true)
 		else:
-			chip_res = MEZZO_CHIP
+			chip_res = MEZZO_CHIP.duplicate(true)
 	else:
-		chip_res = DEFAULT_CHIP
+		chip_res = DEFAULT_CHIP.duplicate(true)
 
 	current_chip.ChipResource = chip_res
 	current_chip.player_id = current_player.player_id
