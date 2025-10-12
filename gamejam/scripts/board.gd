@@ -2,6 +2,17 @@ class_name GameBoardData
 extends Node2D
 
 signal board_updated
+signal chip_dropped(chip: ChipInstance, column: int, coords: Vector2i)
+signal ability_triggered(ability_name: String, cell: Vector2i, effects: Array)
+signal effects_resolving(effects: Array)
+signal cell_destroyed(pos: Vector2i, owner_before: int)
+signal cell_recolored(pos: Vector2i, owner_before: int, owner_after: int)
+signal cells_swapped(pos_a: Vector2i, pos_b: Vector2i)
+signal chip_spawned(pos: Vector2i, owner_after: int)
+signal timer_flagged(pos: Vector2i, countdown: int)
+signal timers_ticked(ticks: Array) # [{pos: Vector2i, from: int, to: int}]
+signal timer_exploded(center: Vector2i, destroyed_positions: Array) # [Vector2i]
+signal effects_resolved(effects: Array)
 
 var BOARD_WIDTH: int
 var BOARD_HEIGHT: int
@@ -185,6 +196,8 @@ func drop_chip(chip: ChipInstance, col_num: int):
 			landed = cell
 			break
 	
+	if landed:
+		chip_dropped.emit(chip, col_num, landed.coords)
 	if landed and chip.ChipResource and chip.ChipResource.ability != null:
 		var ctx := Ability.AbilityContext.new()
 		ctx.board = self
@@ -195,6 +208,7 @@ func drop_chip(chip: ChipInstance, col_num: int):
 
 		var fx: Array[Effect] = chip.ChipResource.ability.compute_effects(ctx)
 		
+		ability_triggered.emit(chip.ChipResource.ability.get_class(), landed.coords, fx)
 		resolve_effects(fx)
 
 
@@ -303,6 +317,7 @@ func resolve_effects(effects: Array[Effect]) -> void:
 	if effects.is_empty():
 		return
 
+	effects_resolving.emit(effects)
 	# 1) Ordnung erzwingen
 	var destroy := effects.filter(func(e): return e.kind == Effect.Kind.DESTROY_CELL)
 	var recolor := effects.filter(func(e): return e.kind == Effect.Kind.RECOLOR_CELL)
@@ -320,12 +335,17 @@ func resolve_effects(effects: Array[Effect]) -> void:
 	for e in destroy:
 		var c := get_board_cell(e.pos_a)
 		if c and c.has_chip():
+			var owner_before := c.chip.player_id
 			c.chip = null
+			cell_destroyed.emit(e.pos_a, owner_before)
 
 	for e in recolor:
 		var c := get_board_cell(e.pos_a)
 		if c and c.has_chip():
-			c.chip.player_id = int(e.payload.get("owner", c.chip.player_id))
+			var owner_before := c.chip.player_id
+			var owner_after := int(e.payload.get("owner", c.chip.player_id))
+			c.chip.player_id = owner_after
+			cell_recolored.emit(e.pos_a, owner_before, owner_after)
 
 	for e in swap:
 		var a := get_board_cell(e.pos_a)
@@ -334,36 +354,57 @@ func resolve_effects(effects: Array[Effect]) -> void:
 			var tmp = b.chip
 			b.chip = a.chip
 			a.chip = tmp
+			cells_swapped.emit(e.pos_a, e.pos_b)
 
 	for e in spawn:
 		var c := get_board_cell(e.pos_a)
 		if c and not c.has_chip():
 			c.chip = e.payload.get("chip", null)
+			if c.has_chip():
+				chip_spawned.emit(e.pos_a, c.chip.player_id)
 
 	for e in timer:
 		var c := get_board_cell(e.pos_a)
 		if c and c.has_chip():
-			c.chip.timer_countdown = int(e.payload.get("countdown", c.chip.timer_countdown))
+			var cd := int(e.payload.get("countdown", c.chip.timer_countdown))
+			c.chip.timer_countdown = cd
+			timer_flagged.emit(e.pos_a, cd)
 
 	# 3) Physik + Cluster (einmal pro “Welle”)
 	update_board_state() # deine Gravity + clusters/emit
+	effects_resolved.emit(effects)
 
 
 func tick_timers_and_collect_effects() -> Array[Effect]:
 	var out: Array[Effect] = []
+	var ticks := []
 	for cell in all_chips_in_play():
 		var inst := cell.chip
 		if inst != null and inst.timer_countdown != null and inst.timer_countdown >= 0:
+			var from_val := inst.timer_countdown
 			if inst.timer_countdown > 0:
 				inst.timer_countdown -= 1
+			# Collect tick info only if changed
+			if inst.timer_countdown != from_val:
+				ticks.append({
+					"pos": cell.coords,
+					"from": from_val,
+					"to": inst.timer_countdown
+				})
 			if inst.timer_countdown == 0:
+				var destroyed_positions: Array[Vector2i] = []
 				for nb in get_board_cell_neighbours(cell.coords):
 					if nb != null and nb.has_chip():
 						var e := Effect.new()
 						e.kind = Effect.Kind.DESTROY_CELL
 						e.pos_a = nb.coords
 						out.append(e)
+						destroyed_positions.append(nb.coords)
+				timer_exploded.emit(cell.coords, destroyed_positions)
 				inst.timer_countdown = -1
+	# Emit aggregated tick info
+	if ticks.size() > 0:
+		timers_ticked.emit(ticks)
 	return out
 
 
