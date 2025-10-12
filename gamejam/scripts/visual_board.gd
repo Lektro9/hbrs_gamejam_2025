@@ -1,20 +1,18 @@
 extends Node2D
 
 @export var empty_texture: Texture2D
-@export var red_texture: Texture2D
-@export var blue_texture: Texture2D
 
 var grid_size: Vector2i
 @export var cell_size: Vector2 = Vector2(128, 128)
 @onready var grid_container: Node2D = $GridContainer
 @onready var empty_grid_container: Node2D = $GridContainer/EmptyGridContainer
 @onready var filled_grid_container: Node2D = $GridContainer/FilledGridContainer
-const DEFAULT_PLAYER_1_CHIP = preload("uid://by11wc80p4n7w")
 const COLUMN_AREA = preload("uid://xtv2ebfyw4bp")
 @onready var column_container: Node2D = $GridContainer/ColumnContainer
 
 # 2D array to store the state (0 = empty, 1 = red, 2 = yellow)
 var filled_board := []
+# for visual debugging
 var empty_board := []
 
 func _init_board():
@@ -28,7 +26,7 @@ func _init_board():
 			filled_board[x].append(0)  # all empty at start
 
 func _ready():
-	pass
+	GameManager.init_visual_board.connect(init_visual_board)
 
 func _draw_empty_board():
 	# Clear old sprites if needed
@@ -62,28 +60,18 @@ func _draw_board():
 				sprite.texture = chip.ChipResource.icon
 				sprite.modulate = chip.color
 			else:
-				sprite.texture = _get_texture_for_cell(0)
+				sprite.texture = empty_texture
 				
 				
 			sprite.position = origin + Vector2(x, grid_size.y - 1 - y) * cell_size
 			filled_grid_container.add_child(sprite)
-
-func _get_texture_for_cell(value: int) -> Texture2D:
-	match value:
-		1:
-			return red_texture
-		2:
-			return blue_texture
-		_:
-			return empty_texture
 
 func drop_chip(column: int):
 	GameManager.drop_chip(column)
 	GameManager.game_board.debug_print()
 	_draw_board()
 
-func start_game():
-	GameManager.start_game()
+func init_visual_board():
 	grid_size = Vector2i(GameManager.game_board.BOARD_WIDTH, GameManager.game_board.BOARD_HEIGHT)
 	spawn_column_areas()
 	for column in column_container.get_children():

@@ -1,28 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://brl0maa4m6fvo"]
+[gd_scene load_steps=3 format=3 uid="uid://brl0maa4m6fvo"]
 
 [ext_resource type="Script" uid="uid://hqtyrljwugbi" path="res://scripts/visual_board.gd" id="1_gqwxl"]
 [ext_resource type="Texture2D" uid="uid://005mq1jimp5n" path="res://images/empty_cell.png" id="2_bycon"]
-[ext_resource type="Texture2D" uid="uid://ehpyxt8bfrjb" path="res://images/red_chip.png" id="2_nkljx"]
-[ext_resource type="Texture2D" uid="uid://bb8m2mmifgm2m" path="res://images/blue_chip.png" id="3_ybonp"]
-[ext_resource type="Texture2D" uid="uid://d1cycydp81at7" path="res://images/playgrid.png" id="4_ybonp"]
 
 [node name="VisualBoard" type="Node2D"]
 script = ExtResource("1_gqwxl")
 empty_texture = ExtResource("2_bycon")
-red_texture = ExtResource("2_nkljx")
-blue_texture = ExtResource("3_ybonp")
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="DropChipBtn" type="Button" parent="CanvasLayer"]
-offset_left = 84.0
-offset_top = 630.0
-offset_right = 166.0
-offset_bottom = 661.0
-text = "start"
 
 [node name="GridContainer" type="Node2D" parent="."]
-position = Vector2(563, 273)
 scale = Vector2(0.5, 0.5)
 
 [node name="EmptyGridContainer" type="Node2D" parent="GridContainer"]
@@ -30,11 +15,3 @@ scale = Vector2(0.5, 0.5)
 [node name="FilledGridContainer" type="Node2D" parent="GridContainer"]
 
 [node name="ColumnContainer" type="Node2D" parent="GridContainer"]
-
-[node name="Playgrid" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(611, 354)
-scale = Vector2(3.279295, 3.279295)
-texture = ExtResource("4_ybonp")
-
-[connection signal="pressed" from="CanvasLayer/DropChipBtn" to="." method="start_game"]
