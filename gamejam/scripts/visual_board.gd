@@ -58,7 +58,10 @@ func _draw_board():
 			var chip: ChipInstance = GameManager.game_board.board_cells.get(Vector2i(x, y)).chip
 			if chip != null:
 				sprite.texture = chip.ChipResource.icon
-				sprite.modulate = chip.color
+				if chip.player_id == 1:
+					sprite.modulate = GameManager.player_1.color
+				else:
+					sprite.modulate = GameManager.player_2.color
 			else:
 				sprite.texture = empty_texture
 				
