@@ -11,8 +11,8 @@ signal update_curr_chip(chip: ChipInstance)
 
 @onready var draw_label: Label = $DebugUi/DrawLabel
 @onready var state_chart: StateChart = $StateChart
-@onready var debug_ui: CanvasLayer = $DebugUi
-@onready var state_chart_debugger: MarginContainer = $DebugUi/StateChartDebugger
+#@onready var debug_menu: CanvasLayer = %DebugMenu
+#@onready var state_chart_debugger: MarginContainer = $DebugUi/StateChartDebugger
 const CHIP_INSTANCE := preload("uid://dcmnbaonn5a5p")
 const DEFAULT_CHIP := preload("uid://by11wc80p4n7w")
 const EXPLODING_CHIP := preload("uid://bw88ik32ujbr7")
@@ -31,10 +31,9 @@ var score_needed: int = 20
 var BOARD_HEIGHT: int = 6
 var BOARD_WIDTH: int = 7
 
-func _ready() -> void:
-	if not OS.is_debug_build():
-		debug_ui.hide()
-		state_chart_debugger.hide()
+#func _ready() -> void:
+	#if not OS.is_debug_build():
+	#debug_menu.hide()
 	
 func get_player() -> Player:
 	if does_player_one_play:

@@ -31,8 +31,6 @@ scale = Vector2(1.251, 1.251)
 
 [node name="VersionLabel" parent="." instance=ExtResource("5_tbgi4")]
 
-[node name="DebugMenu2" parent="." instance=ExtResource("2_0wfyh")]
-
 [node name="PCam2D" type="Node2D" parent="."]
 top_level = true
 script = ExtResource("3_tbgi4")
@@ -63,6 +61,8 @@ noise = SubResource("Resource_85g3d")
 metadata/_custom_type_script = "uid://bhd4nuiu23e7l"
 
 [node name="DebugMenu" parent="." instance=ExtResource("2_0wfyh")]
+unique_name_in_owner = true
+visible = false
 
 [node name="AudioStreamMusic" type="AudioStreamPlayer2D" parent="."]
 unique_name_in_owner = true
