@@ -9,7 +9,7 @@ var y: int
 # Holds all neighbours
 var neighbours: Array[BoardCell] = []
 
-var chip: Chip = null
+var chip: ChipInstance = null
 
 var is_in_cluster: bool = false
 
@@ -33,5 +33,5 @@ func _to_string() -> String:
 func has_chip() -> bool:
 	return chip != null
 
-func assign_chip(c: Chip) -> void:
+func assign_chip(c: ChipInstance) -> void:
 	self.chip = c

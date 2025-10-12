@@ -57,9 +57,10 @@ func _draw_board():
 	for y in range(grid_size.y):
 		for x in range(grid_size.x):
 			var sprite = Sprite2D.new()
-			var chip: Chip = GameManager.game_board.board_cells.get(Vector2i(x, y)).chip
+			var chip: ChipInstance = GameManager.game_board.board_cells.get(Vector2i(x, y)).chip
 			if chip != null:
-				sprite.texture = _get_texture_for_cell(chip.player_id)
+				sprite.texture = chip.ChipResource.icon
+				sprite.modulate = chip.color
 			else:
 				sprite.texture = _get_texture_for_cell(0)
 				
@@ -77,7 +78,7 @@ func _get_texture_for_cell(value: int) -> Texture2D:
 			return empty_texture
 
 func drop_chip(column: int):
-	GameManager.drop_chip(DEFAULT_PLAYER_1_CHIP, column)
+	GameManager.drop_chip(column)
 	GameManager.game_board.debug_print()
 	_draw_board()
 

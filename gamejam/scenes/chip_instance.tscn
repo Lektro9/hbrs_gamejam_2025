@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://dcmnbaonn5a5p"]
+
+[ext_resource type="Texture2D" uid="uid://cy8cioxelycqd" path="res://images/icon.svg" id="1_0oa0q"]
+[ext_resource type="Script" uid="uid://hv0s24oxdn0n" path="res://scripts/chip_instance.gd" id="1_11x5f"]
+[ext_resource type="Resource" uid="uid://by11wc80p4n7w" path="res://chips/default_chip.tres" id="2_tdb0c"]
+
+[node name="ChipInstance" type="Node2D"]
+script = ExtResource("1_11x5f")
+ChipResource = ExtResource("2_tdb0c")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(9.536743e-07, 9.536743e-07)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_0oa0q")

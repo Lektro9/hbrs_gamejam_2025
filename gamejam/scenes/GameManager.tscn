@@ -48,7 +48,7 @@ script = ExtResource("3_rtub8")
 [node name="ToCheckWin" type="Node" parent="StateChart/Root/DropChip"]
 script = ExtResource("5_rtub8")
 to = NodePath("../../CheckWin")
-delay_in_seconds = "2.0"
+delay_in_seconds = "0.5"
 
 [node name="CheckWin" type="Node" parent="StateChart/Root"]
 script = ExtResource("3_rtub8")
@@ -68,7 +68,7 @@ delay_in_seconds = "0.0"
 [node name="ToSwitchPlayer" type="Node" parent="StateChart/Root/CheckWin"]
 script = ExtResource("5_rtub8")
 to = NodePath("../../SwitchPlayer")
-delay_in_seconds = "2.0"
+delay_in_seconds = "0.5"
 
 [node name="SwitchPlayer" type="Node" parent="StateChart/Root"]
 script = ExtResource("3_rtub8")
@@ -76,7 +76,7 @@ script = ExtResource("3_rtub8")
 [node name="ToPlayerTurn" type="Node" parent="StateChart/Root/SwitchPlayer"]
 script = ExtResource("5_rtub8")
 to = NodePath("../../PlayerTurn")
-delay_in_seconds = "2.0"
+delay_in_seconds = "0.5"
 
 [node name="Win" type="Node" parent="StateChart/Root"]
 script = ExtResource("3_rtub8")
@@ -118,3 +118,7 @@ grow_horizontal = 0
 initial_node_to_watch = NodePath("../../StateChart")
 
 [connection signal="state_entered" from="StateChart/Root/Init" to="." method="_on_init_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/PlayerTurn" to="." method="_on_player_turn_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/DropChip" to="." method="_on_drop_chip_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/CheckWin" to="." method="_on_check_win_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/SwitchPlayer" to="." method="_on_switch_player_state_entered"]

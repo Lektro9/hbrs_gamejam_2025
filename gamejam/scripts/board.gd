@@ -169,7 +169,7 @@ func all_chips_in_play() -> Array[BoardCell]:
 	return board_cells.values().filter(func(c: BoardCell): return c.has_chip())
 
 ## Drops a chip onto the board
-func drop_chip(chip: Chip, col_num: int):
+func drop_chip(chip: ChipInstance, col_num: int):
 	var c = get_board_cell_by_coords(col_num, BOARD_HEIGHT - 1)
 		
 	if not c.has_chip():
@@ -301,7 +301,7 @@ func debug_print():
 					_:
 						char = "?"
 				
-				if c.special_type != Chip.Specials.NORMAL:
+				if c.ChipResource.special_type != Chip.Specials.NORMAL:
 					special_marker = "*"
 				
 				if cell.is_in_cluster:
