@@ -13,8 +13,14 @@ signal update_curr_chip(chip: ChipInstance)
 @onready var state_chart: StateChart = $StateChart
 @onready var debug_ui: CanvasLayer = $DebugUi
 @onready var state_chart_debugger: MarginContainer = $DebugUi/StateChartDebugger
-const CHIP_INSTANCE = preload("uid://dcmnbaonn5a5p")
-const DEFAULT_CHIP = preload("uid://by11wc80p4n7w")
+const CHIP_INSTANCE := preload("uid://dcmnbaonn5a5p")
+const DEFAULT_CHIP := preload("uid://by11wc80p4n7w")
+const EXPLODING_CHIP := preload("uid://bw88ik32ujbr7")
+const KOMBUCHA_CHIP := preload("uid://c57ucj5aav206")
+const MEZZO_CHIP := preload("uid://d2mhdm3mamng5")
+const PAINTING_CHIP := preload("uid://bv32ffxumgi8j")
+const SHIFTER_CHIP := preload("uid://rpu2nuj5vjk5")
+const TIMER_CHIP := preload("uid://ckwb352522uuj")
 
 var player_1: Player
 var player_2: Player
@@ -110,35 +116,27 @@ func _on_player_turn_state_entered() -> void:
 	var current_player = get_player()
 	var current_chip: ChipInstance = CHIP_INSTANCE.instantiate()
 
-	# Create per-chip resource; 20% special chance, weighted across 6 specials:
-	# Explode 30, Paint 30, Timer 20, Kombucha 10, Shifter 7, Mezzo 3
+	# Create per-chip resource; X% special chance, weighted across 6 specials:
 	var chip_res: Chip = DEFAULT_CHIP.duplicate(true)
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
-	var is_special := rng.randi_range(1, 100) <= 40
+	var is_special := rng.randi_range(1, 100) <= 40 # Chance
 	if is_special:
 		var roll := rng.randi_range(1, 100)
 		if roll <= 17:
-			chip_res.special_type = Chip.Specials.EXPLODE
-			chip_res.ability = AbilityExplode.new()
+			chip_res = EXPLODING_CHIP
 		elif roll <= 34:
-			chip_res.special_type = Chip.Specials.PAINT
-			chip_res.ability = AbilityPaint.new()
+			chip_res = PAINTING_CHIP
 		elif roll <= 51:
-			chip_res.special_type = Chip.Specials.TIMER
-			chip_res.ability = AbilityTimer.new()
+			chip_res = TIMER_CHIP
 		elif roll <= 68:
-			chip_res.special_type = Chip.Specials.KOMBUCHA
-			chip_res.ability = AbilityKombucha.new()
+			chip_res = KOMBUCHA_CHIP
 		elif roll <= 85:
-			chip_res.special_type = Chip.Specials.SHIFTER
-			chip_res.ability = AbilityColumnShift.new()
+			chip_res = SHIFTER_CHIP
 		else:
-			chip_res.special_type = Chip.Specials.MEZZO
-			chip_res.ability = null # passive wildcard
+			chip_res = MEZZO_CHIP
 	else:
-		chip_res.special_type = Chip.Specials.NORMAL
-		chip_res.ability = null
+		chip_res = DEFAULT_CHIP
 
 	current_chip.ChipResource = chip_res
 	current_chip.player_id = current_player.player_id
