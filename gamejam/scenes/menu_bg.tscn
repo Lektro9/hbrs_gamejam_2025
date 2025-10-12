@@ -1,0 +1,108 @@
+[gd_scene load_steps=10 format=3 uid="uid://d04oak74u5og1"]
+
+[ext_resource type="Script" uid="uid://di52dgmf082j6" path="res://scripts/menu_bg.gd" id="1_0wcor"]
+[ext_resource type="Texture2D" uid="uid://ci0qjf6xyeu0q" path="res://images/main_menu/sky.png" id="1_c1gna"]
+[ext_resource type="Texture2D" uid="uid://p30j8w7ae2bb" path="res://images/main_menu/buildings.png" id="2_0wcor"]
+
+[sub_resource type="Animation" id="Animation_d6sgc"]
+resource_name = "menu_goes_up"
+length = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BGContainer:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -900)]
+}
+
+[sub_resource type="Animation" id="Animation_ed5m1"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BGContainer:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hbm6h"]
+_data = {
+&"RESET": SubResource("Animation_ed5m1"),
+&"menu_goes_up": SubResource("Animation_d6sgc")
+}
+
+[sub_resource type="Animation" id="Animation_0wcor"]
+resource_name = "sky_move"
+length = 5.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BGContainer/SkyContainer:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(1024, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_hbm6h"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BGContainer/SkyContainer:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_28v7y"]
+_data = {
+&"RESET": SubResource("Animation_hbm6h"),
+&"sky_move": SubResource("Animation_0wcor")
+}
+
+[node name="MenuBg" type="Node2D"]
+script = ExtResource("1_0wcor")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_hbm6h")
+}
+
+[node name="BGContainer" type="Node2D" parent="."]
+
+[node name="SkyContainer" type="Node2D" parent="BGContainer"]
+
+[node name="Sky" type="Sprite2D" parent="BGContainer/SkyContainer"]
+texture = ExtResource("1_c1gna")
+
+[node name="Sky2" type="Sprite2D" parent="BGContainer/SkyContainer"]
+position = Vector2(-1016, 0)
+texture = ExtResource("1_c1gna")
+
+[node name="Buildings" type="Sprite2D" parent="BGContainer"]
+texture = ExtResource("2_0wcor")
+
+[node name="Sky_anim" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_28v7y")
+}
+autoplay = "sky_move"

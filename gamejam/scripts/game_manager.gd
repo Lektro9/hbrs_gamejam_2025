@@ -5,6 +5,7 @@ signal update_player_score(scores)
 signal show_score_board(should_show: bool)
 signal show_main_menu(should_show: bool)
 signal init_visual_board
+signal scroll_background(is_going_down: bool)
 
 @onready var state_chart: StateChart = $StateChart
 @onready var debug_ui: CanvasLayer = $DebugUi
@@ -67,6 +68,7 @@ func _on_init_state_exited() -> void:
 	var scores := game_board.get_team_scores()
 	update_player_score.emit(scores)
 	init_visual_board.emit()
+	scroll_background.emit(true)
 
 func _on_drop_chip_state_entered() -> void:
 	game_board.drop_chip(get_player().current_chip, chosen_column)
