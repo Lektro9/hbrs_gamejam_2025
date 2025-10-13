@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Chip" load_steps=6 format=3 uid="uid://bv32ffxumgi8j"]
 
-[ext_resource type="Script" path="res://scripts/ability_paint.gd" id="1_ci1o0"]
+[ext_resource type="Script" uid="uid://cexl2m538dk80" path="res://scripts/ability_paint.gd" id="1_ci1o0"]
 [ext_resource type="Script" uid="uid://dp7rx7emxm1ns" path="res://scripts/chip.gd" id="2_p2mnn"]
 [ext_resource type="Texture2D" uid="uid://dfygeen266lkx" path="res://images/neutral_chip.png" id="2_qvs5j"]
 [ext_resource type="Texture2D" uid="uid://dalfcthrgw4h8" path="res://images/chips/painter.png" id="3_qvs5j"]

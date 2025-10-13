@@ -1,13 +1,19 @@
-[gd_scene load_steps=9 format=3 uid="uid://bb4bqi8ghs0su"]
+[gd_scene load_steps=10 format=3 uid="uid://bb4bqi8ghs0su"]
 
 [ext_resource type="Script" uid="uid://gt2igi5lslwk" path="res://scripts/player_ui.gd" id="1_jkj6h"]
 [ext_resource type="Theme" uid="uid://c3bfsu14hvt5x" path="res://global_theme.tres" id="2_sk4pr"]
-[ext_resource type="Script" path="res://scripts/player_score.gd" id="3_7ctsh"]
+[ext_resource type="Script" uid="uid://cfdk1jrxkbssw" path="res://scripts/player_score.gd" id="3_7ctsh"]
 [ext_resource type="Script" uid="uid://dgxsv22bfkq2x" path="res://scripts/tween_custom.gd" id="3_8isll"]
-[ext_resource type="Script" path="res://scripts/film_grain_noise.gd" id="3_48xfa"]
+[ext_resource type="Shader" uid="uid://bjw7vstmt3561" path="res://player_ui.gdshader" id="5_bkx2g"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_48xfa"]
 radius = 60.074955
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n31oh"]
+shader = ExtResource("5_bkx2g")
+shader_parameter/grain_amount = 0.05200000247
+shader_parameter/grain_size = 0.68100002908762
+shader_parameter/speed = 0.06800000323
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_8isll"]
 frequency = 1.0
@@ -291,14 +297,14 @@ layout_mode = 2
 theme = ExtResource("2_sk4pr")
 bbcode_enabled = true
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="FilmGrainEffect" type="TextureRect" parent="."]
 modulate = Color(1, 1, 1, 0.105882354)
 z_index = 10
+material = SubResource("ShaderMaterial_n31oh")
 offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 texture = SubResource("NoiseTexture2D_7ctsh")
-script = ExtResource("3_48xfa")
 metadata/_edit_lock_ = true
 
 [connection signal="pressed" from="GameOver/RestartGame" to="." method="restart_game"]

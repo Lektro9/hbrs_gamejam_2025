@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Chip" load_steps=6 format=3 uid="uid://c57ucj5aav206"]
 
-[ext_resource type="Script" path="res://scripts/ability_kombucha.gd" id="1_dcxcw"]
+[ext_resource type="Script" uid="uid://cuybcwtetry7k" path="res://scripts/ability_kombucha.gd" id="1_dcxcw"]
 [ext_resource type="Texture2D" uid="uid://dfygeen266lkx" path="res://images/neutral_chip.png" id="2_dcxcw"]
 [ext_resource type="Script" uid="uid://dp7rx7emxm1ns" path="res://scripts/chip.gd" id="2_v15xm"]
 [ext_resource type="Texture2D" uid="uid://bi6ubnw5u7hrf" path="res://images/chips/kambutcha.png" id="3_dcxcw"]
