@@ -32,10 +32,11 @@ var game_board: GameBoardData
 var does_player_one_play = true # true for player 1, false for player 2
 var chosen_column: int
 var score_needed: int = 20
-var chips_per_turn: int = 3
+var chips_per_turn: int = 2
 var BOARD_HEIGHT: int = 6
 var BOARD_WIDTH: int = 7
 var current_round_offer_templates: Array[Chip] = []
+var has_initialized: bool = false
 
 #func _ready() -> void:
 	#if not OS.is_debug_build():
@@ -192,6 +193,10 @@ func _on_init_state_entered() -> void:
 	current_round_offer_templates.clear()
 	game_over.emit(get_player().player_id, false, false)
 	does_player_one_play = true
+	if has_initialized:
+		game_over.emit(get_player().player_id, false)
+	else:
+		has_initialized = true
 
 func _on_init_state_exited() -> void:
 	game_board = GameBoardData.new(BOARD_HEIGHT, BOARD_WIDTH)
