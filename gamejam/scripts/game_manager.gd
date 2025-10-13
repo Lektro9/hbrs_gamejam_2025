@@ -11,6 +11,7 @@ signal scroll_background(is_going_down: bool)
 signal update_curr_chip(chip: ChipInstance)
 signal update_chip_choices(chips: Array[ChipInstance])
 signal clean_up_visuals
+signal update_visual_board
 
 @onready var draw_label: Label = $DebugUi/DrawLabel
 @onready var state_chart: StateChart = $StateChart
@@ -37,6 +38,7 @@ var BOARD_HEIGHT: int = 6
 var BOARD_WIDTH: int = 7
 var current_round_offer_templates: Array[Chip] = []
 var has_initialized: bool = false
+var scroll_background_emitted_once = false
 
 #func _ready() -> void:
 	#if not OS.is_debug_build():
@@ -203,7 +205,8 @@ func _on_init_state_exited() -> void:
 	var scores := game_board.get_team_scores()
 	update_player_score.emit(scores)
 	init_visual_board.emit()
-	scroll_background.emit(true)
+	scroll_background_emitted_once = false
+	
 
 func _on_drop_chip_state_entered() -> void:
 	var current_player := get_player()
@@ -214,6 +217,7 @@ func _on_drop_chip_state_entered() -> void:
 		push_warning("Attempted to drop a chip without selecting one.")
 		return
 	game_board.drop_chip(played_chip, chosen_column)
+	update_visual_board.emit()
 	var scores := game_board.get_team_scores()
 	player_1.score = scores.get(player_1.player_id)
 	player_2.score = scores.get(player_2.player_id)
@@ -255,7 +259,6 @@ func _on_player_turn_state_entered() -> void:
 	show_chip_value.emit(true)
 	show_score_board.emit(true)
 	show_next_chip_ui.emit(true)
-	show_main_menu.emit(false)
 	var current_player := get_player()
 	if current_player == null:
 		return
@@ -291,3 +294,11 @@ func _on_restart_prompt_state_exited() -> void:
 	scroll_background.emit(false)
 	clean_up_visuals.emit()
 	show_next_chip_ui.emit(false)
+
+
+func _on_init_transition_pending(initial_delay: float, remaining_delay: float) -> void:
+	if not scroll_background_emitted_once:
+		scroll_background_emitted_once = true
+		scroll_background.emit(true)
+		show_main_menu.emit(false)
+	pass # Replace with function body.

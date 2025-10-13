@@ -1,8 +1,26 @@
-[gd_scene load_steps=10 format=3 uid="uid://d04oak74u5og1"]
+[gd_scene load_steps=17 format=3 uid="uid://d04oak74u5og1"]
 
 [ext_resource type="Script" uid="uid://di52dgmf082j6" path="res://scripts/menu_bg.gd" id="1_0wcor"]
 [ext_resource type="Texture2D" uid="uid://ci0qjf6xyeu0q" path="res://images/main_menu/sky.png" id="1_c1gna"]
 [ext_resource type="Texture2D" uid="uid://p30j8w7ae2bb" path="res://images/main_menu/buildings.png" id="2_0wcor"]
+[ext_resource type="Texture2D" uid="uid://4b3jlid65cb4" path="res://images/bottle.png" id="4_ed5m1"]
+[ext_resource type="Texture2D" uid="uid://b366wyayss3nl" path="res://images/bottle_cap.png" id="5_hbm6h"]
+[ext_resource type="AudioStream" uid="uid://b35kfu8o7amck" path="res://audio/bottle_open_hit.wav" id="6_28v7y"]
+
+[sub_resource type="Animation" id="Animation_ed5m1"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BGContainer:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_d6sgc"]
 resource_name = "menu_goes_up"
@@ -20,12 +38,18 @@ tracks/0/keys = {
 "values": [Vector2(0, 0), Vector2(0, -900)]
 }
 
-[sub_resource type="Animation" id="Animation_ed5m1"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hbm6h"]
+_data = {
+&"RESET": SubResource("Animation_ed5m1"),
+&"menu_goes_up": SubResource("Animation_d6sgc")
+}
+
+[sub_resource type="Animation" id="Animation_hbm6h"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("BGContainer:position")
+tracks/0/path = NodePath("BGContainer/SkyContainer:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -33,12 +57,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(0, 0)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_hbm6h"]
-_data = {
-&"RESET": SubResource("Animation_ed5m1"),
-&"menu_goes_up": SubResource("Animation_d6sgc")
 }
 
 [sub_resource type="Animation" id="Animation_0wcor"]
@@ -58,25 +76,251 @@ tracks/0/keys = {
 "values": [Vector2(0, 0), Vector2(1024, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_hbm6h"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_28v7y"]
+_data = {
+&"RESET": SubResource("Animation_hbm6h"),
+&"sky_move": SubResource("Animation_0wcor")
+}
+
+[sub_resource type="Animation" id="Animation_28v7y"]
+resource_name = "clash_bottles"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BGContainer/BottlesContainer:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.26666668),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(-298, -412), Vector2(-74, -412)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BGContainer/BottlesContainer:rotation")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.5969026, 0.5969026, -0.2868718]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("BGContainer/BottlesContainer/Bottle:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.33333334, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, 0), Vector2(0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("BGContainer/BottlesContainer/BottleCap:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.33, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, 0), Vector2(-175.71544, -365.66254)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("BGContainer/BottlesContainer2:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.26666668),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(247, -408), Vector2(56.999985, -408)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("BGContainer/BottlesContainer2:rotation")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.27),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, -0.5029864]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("BGContainer/BottlesContainer2/BottleCap:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.33029142, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, 0), Vector2(-305, -305)]
+}
+tracks/7/type = "method"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath(".")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0.5),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"play_menu_scroll"
+}]
+}
+tracks/8/type = "method"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("OpenSound")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0.13333334, 0.33333334),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [0.0],
+"method": &"play"
+}, {
+"args": [0.0],
+"method": &"play"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_30qy1"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("BGContainer/SkyContainer:position")
+tracks/0/path = NodePath("BGContainer/BottlesContainer:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
+"values": [Vector2(-298, -412)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BGContainer/BottlesContainer:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-0.2868718]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("BGContainer/BottlesContainer/Bottle:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("BGContainer/BottlesContainer/BottleCap:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("BGContainer/BottlesContainer2:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(247, -408)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("BGContainer/BottlesContainer2:rotation")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-0.5029864]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("BGContainer/BottlesContainer2/BottleCap:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
 "values": [Vector2(0, 0)]
 }
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_28v7y"]
+[sub_resource type="Animation" id="Animation_fccyc"]
+resource_name = "bottle_idle"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BGContainer/BottlesContainer:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.30253583, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(-298, -412), Vector2(-298, -450.99997), Vector2(-298, -412)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BGContainer/BottlesContainer2:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(247, -408), Vector2(247, -476), Vector2(247, -408)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_fccyc"]
 _data = {
-&"RESET": SubResource("Animation_hbm6h"),
-&"sky_move": SubResource("Animation_0wcor")
+&"RESET": SubResource("Animation_30qy1"),
+&"bottle_idle": SubResource("Animation_fccyc"),
+&"clash_bottles": SubResource("Animation_28v7y")
 }
 
 [node name="MenuBg" type="Node2D"]
@@ -101,8 +345,43 @@ texture = ExtResource("1_c1gna")
 [node name="Buildings" type="Sprite2D" parent="BGContainer"]
 texture = ExtResource("2_0wcor")
 
+[node name="BottlesContainer" type="Node2D" parent="BGContainer"]
+position = Vector2(-298, -412)
+rotation = -0.2868718
+scale = Vector2(0.99999994, 0.99999994)
+
+[node name="Bottle" type="Sprite2D" parent="BGContainer/BottlesContainer"]
+scale = Vector2(0.21597221, 0.21597221)
+texture = ExtResource("4_ed5m1")
+
+[node name="BottleCap" type="Sprite2D" parent="BGContainer/BottlesContainer"]
+scale = Vector2(0.21597221, 0.21597221)
+texture = ExtResource("5_hbm6h")
+
+[node name="BottlesContainer2" type="Node2D" parent="BGContainer"]
+position = Vector2(247, -408)
+rotation = -0.5029864
+
+[node name="Bottle" type="Sprite2D" parent="BGContainer/BottlesContainer2"]
+scale = Vector2(0.21597221, 0.21597221)
+texture = ExtResource("4_ed5m1")
+
+[node name="BottleCap" type="Sprite2D" parent="BGContainer/BottlesContainer2"]
+scale = Vector2(0.21597221, 0.21597221)
+texture = ExtResource("5_hbm6h")
+
 [node name="Sky_anim" type="AnimationPlayer" parent="."]
 libraries = {
 &"": SubResource("AnimationLibrary_28v7y")
 }
 autoplay = "sky_move"
+
+[node name="Bottles_anim" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_fccyc")
+}
+autoplay = "bottle_idle"
+
+[node name="OpenSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_28v7y")
+bus = &"SFX"

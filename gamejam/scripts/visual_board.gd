@@ -31,6 +31,7 @@ func _init_board():
 func _ready():
 	GameManager.init_visual_board.connect(init_visual_board)
 	GameManager.clean_up_visuals.connect(clean_up)
+	GameManager.update_visual_board.connect(_draw_board)
 
 func _draw_empty_board():
 	# Clear old sprites if needed
@@ -67,7 +68,9 @@ func _draw_board():
 			var chip: ChipInstance = cell.chip
 			if chip == null:
 				continue
-
+			chip.stop_in_cluster_tween()
+			if cell.is_in_cluster and chip.in_cluster_tween:
+				chip.in_cluster_tween.start_tween()
 			var target_position: Vector2 = origin + Vector2(x, grid_size.y - 1 - y) * cell_size
 			var key: int = chip.get_instance_id()
 
@@ -110,7 +113,6 @@ func _draw_board():
 func drop_chip(column: int):
 	GameManager.drop_chip(column)
 	GameManager.game_board.debug_print()
-	_draw_board()
 
 func init_visual_board():
 	grid_size = Vector2i(GameManager.game_board.BOARD_WIDTH, GameManager.game_board.BOARD_HEIGHT)

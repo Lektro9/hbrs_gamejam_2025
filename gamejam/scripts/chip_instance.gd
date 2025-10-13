@@ -19,6 +19,7 @@ var _timer_countdown: int = -1
 		return _timer_countdown
 
 var already_animated := false
+@onready var in_cluster_tween: TweenCustom = $Container/InClusterTween
 
 @onready var container: Node2D = $Container
 @onready var sprite_2d: Sprite2D = $Container/Sprite2D
@@ -39,6 +40,11 @@ func _ready():
 	container.position = Vector2.ZERO
 	container.scale = Vector2.ONE
 	_update_timer_visual()
+
+func stop_in_cluster_tween():
+	if in_cluster_tween and in_cluster_tween.tween:
+		in_cluster_tween.tween.stop()
+		$Container.position = Vector2.ZERO
 
 func apply_player_color(target_color: Color) -> void:
 	color = target_color
