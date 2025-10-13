@@ -10,13 +10,20 @@ class_name ChipInstance
 			letter.texture = ChipResource.letter
 @export var player_id: Chip.Ownership
 @export var color: Color
-@export var timer_countdown: int = -1
+var _timer_countdown: int = -1
+@export var timer_countdown: int = -1:
+	set(value):
+		_timer_countdown = value
+		_update_timer_visual()
+	get:
+		return _timer_countdown
 
 var already_animated := false
 
 @onready var container: Node2D = $Container
 @onready var sprite_2d: Sprite2D = $Container/Sprite2D
 @onready var letter: Sprite2D = %Letter
+@onready var timer_label: Label = %TimerLabel
 
 var fall_tween: Tween
 var move_tween: Tween
@@ -31,6 +38,7 @@ func _ready():
 	apply_player_color(color)
 	container.position = Vector2.ZERO
 	container.scale = Vector2.ONE
+	_update_timer_visual()
 
 func apply_player_color(target_color: Color) -> void:
 	color = target_color
@@ -135,6 +143,15 @@ func _play_squash_and_flash(duration: float, strength: float) -> void:
 		letter_flash_tween.set_ease(Tween.EASE_OUT)
 		letter_flash_tween.tween_property(letter, "modulate", letter_flash, duration * 0.6)
 		letter_flash_tween.tween_property(letter, "modulate", letter_base, duration * 0.9)
+
+func _update_timer_visual() -> void:
+	if timer_label == null:
+		return
+	if _timer_countdown >= 0:
+		timer_label.text = str(_timer_countdown)
+		timer_label.visible = true
+	else:
+		timer_label.visible = false
 
 func _kill_tween(tween_ref: Tween) -> Tween:
 	if tween_ref != null and tween_ref.is_running():
