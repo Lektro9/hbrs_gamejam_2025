@@ -1,9 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://bb4bqi8ghs0su"]
+[gd_scene load_steps=9 format=3 uid="uid://bb4bqi8ghs0su"]
 
 [ext_resource type="Script" uid="uid://gt2igi5lslwk" path="res://scripts/player_ui.gd" id="1_jkj6h"]
 [ext_resource type="Theme" uid="uid://c3bfsu14hvt5x" path="res://global_theme.tres" id="2_sk4pr"]
-[ext_resource type="FontFile" uid="uid://qoynv5cogvo4" path="res://fonts/Candy Beans.otf" id="3_8isll"]
-[ext_resource type="Script" uid="uid://cfdk1jrxkbssw" path="res://scripts/player_score.gd" id="3_7ctsh"]
+[ext_resource type="Script" path="res://scripts/player_score.gd" id="3_7ctsh"]
 [ext_resource type="Script" uid="uid://dgxsv22bfkq2x" path="res://scripts/tween_custom.gd" id="3_8isll"]
 [ext_resource type="Script" uid="uid://b5e23anh0po0y" path="res://scripts/film_grain_noise.gd" id="3_48xfa"]
 
@@ -218,6 +217,21 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "8"
 
+[node name="ChipOffers" type="HBoxContainer" parent="MainMenu/Game Settings"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ChipOffersLabel" type="Label" parent="MainMenu/Game Settings/ChipOffers"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Chips per turn:"
+
+[node name="ChipOffersInput" type="LineEdit" parent="MainMenu/Game Settings/ChipOffers"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "3"
+placeholder_text = "3"
+
 [node name="NextChipContainer" type="VBoxContainer" parent="."]
 unique_name_in_owner = true
 offset_left = 22.0
@@ -230,19 +244,30 @@ unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("2_sk4pr")
 theme_override_constants/outline_size = 10
-text = "Next Chip:"
+text = "Selected Chip:"
 
 [node name="SpawnMarker" type="Marker2D" parent="NextChipContainer"]
 unique_name_in_owner = true
-position = Vector2(41, 99)
+position = Vector2(41, 140)
 
 [node name="Area2D" type="Area2D" parent="NextChipContainer"]
 unique_name_in_owner = true
-position = Vector2(41, 100)
+position = Vector2(41, 140)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="NextChipContainer/Area2D"]
 unique_name_in_owner = true
 shape = SubResource("CircleShape2D_48xfa")
+
+[node name="ChoicePreviewRoot" type="Node2D" parent="NextChipContainer"]
+unique_name_in_owner = true
+position = Vector2(124, 252)
+
+[node name="ChipChoicesTitle" type="Label" parent="NextChipContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("2_sk4pr")
+theme_override_constants/outline_size = 10
+text = "Chip Choices:"
 
 [node name="HoverPanel" type="Panel" parent="."]
 unique_name_in_owner = true
@@ -264,7 +289,6 @@ theme_override_constants/margin_bottom = 4
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("2_sk4pr")
-theme_override_fonts/normal_font = ExtResource("3_8isll")
 theme_override_font_sizes/normal_font_size = 20
 bbcode_enabled = true
 
@@ -276,6 +300,7 @@ offset_bottom = 40.0
 mouse_filter = 2
 texture = SubResource("NoiseTexture2D_7ctsh")
 script = ExtResource("3_48xfa")
+metadata/_edit_lock_ = true
 
 [connection signal="pressed" from="GameOver/RestartGame" to="." method="restart_game"]
 [connection signal="pressed" from="MainMenu/Vbox/StartGame" to="." method="start_game"]
