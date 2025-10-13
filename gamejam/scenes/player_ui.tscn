@@ -4,7 +4,7 @@
 [ext_resource type="Theme" uid="uid://c3bfsu14hvt5x" path="res://global_theme.tres" id="2_sk4pr"]
 [ext_resource type="Script" path="res://scripts/player_score.gd" id="3_7ctsh"]
 [ext_resource type="Script" uid="uid://dgxsv22bfkq2x" path="res://scripts/tween_custom.gd" id="3_8isll"]
-[ext_resource type="Script" uid="uid://b5e23anh0po0y" path="res://scripts/film_grain_noise.gd" id="3_48xfa"]
+[ext_resource type="Script" path="res://scripts/film_grain_noise.gd" id="3_48xfa"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_48xfa"]
 radius = 60.074955
