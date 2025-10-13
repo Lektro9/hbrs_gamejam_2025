@@ -112,13 +112,48 @@ func _instantiate_chip_from_template(player: Player, template: Chip) -> ChipInst
 func _generate_round_offer_templates(rng: RandomNumberGenerator, offer_count: int) -> Array[Chip]:
 	var templates: Array[Chip] = []
 	var normals_remaining := MAX_NORMAL_CHIPS_PER_OFFER
-	for _i in offer_count:
-		var allow_normal := normals_remaining > 0
-		var require_special := not allow_normal
+	var used_special_types: Dictionary = {}
+	var reroll_guard := 0
+	var fallback_specials: Array[Dictionary] = [
+		{"type": Chip.Specials.EXPLODE, "resource": EXPLODING_CHIP},
+		{"type": Chip.Specials.PAINT, "resource": PAINTING_CHIP},
+		{"type": Chip.Specials.TIMER, "resource": TIMER_CHIP},
+		{"type": Chip.Specials.KOMBUCHA, "resource": KOMBUCHA_CHIP},
+		{"type": Chip.Specials.SHIFTER, "resource": SHIFTER_CHIP},
+		{"type": Chip.Specials.MEZZO, "resource": MEZZO_CHIP}
+	]
+	while templates.size() < offer_count and reroll_guard < 100:
+		reroll_guard += 1
+		var require_special := normals_remaining <= 0
 		var chip_res := _generate_chip_resource(rng, require_special)
+		if chip_res == null:
+			continue
 		if chip_res.special_type == Chip.Specials.NORMAL:
+			if normals_remaining <= 0:
+				continue
 			normals_remaining -= 1
-		templates.append(chip_res)
+			templates.append(chip_res)
+		else:
+			if used_special_types.has(chip_res.special_type):
+				continue
+			used_special_types[chip_res.special_type] = true
+			templates.append(chip_res)
+	if templates.size() < offer_count:
+		# deterministic fallback to ensure uniqueness
+		rng.shuffle_array(fallback_specials)
+		for candidate_dict in fallback_specials:
+			if templates.size() >= offer_count:
+				break
+			var special_type: int = candidate_dict["type"]
+			if used_special_types.has(special_type):
+				continue
+			var resource: Chip = candidate_dict["resource"]
+			if resource == null:
+				continue
+			templates.append(resource.duplicate(true))
+			used_special_types[special_type] = true
+	if templates.size() < offer_count and normals_remaining > 0:
+		templates.append(DEFAULT_CHIP.duplicate(true))
 	return templates
 
 func _instantiate_offer_instances(player: Player, templates: Array[Chip]) -> Array[ChipInstance]:
