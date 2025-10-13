@@ -27,6 +27,7 @@ func _ready() -> void:
 	GameManager.game_over.connect(set_up_game_over)
 	GameManager.show_score_board.connect(func(should_show): %ScoreBoard.visible = should_show)
 	GameManager.show_main_menu.connect(func(should_show): %MainMenu.visible = should_show)
+	GameManager.show_next_chip_ui.connect(func(should_show): %NextChipContainer.visible = should_show)
 	GameManager.show_chip_value.connect(show_chip_label)
 	GameManager.update_curr_chip.connect(update_chip_label)
 	GameManager.update_chip_choices.connect(update_chip_choices)
@@ -123,9 +124,12 @@ func update_score_labels(scores):
 	player_1_score.set_final_value(p1_score)
 	player_2_score.set_final_value(p2_score)
 
-func set_up_game_over(player_id: int, shouldShow: bool):
+func set_up_game_over(player_id: int, shouldShow: bool, is_draw: bool):
 	if shouldShow:
 		%GameOver.show()
+		if is_draw:
+			%ResultText.text = "[wave amp=50.0 freq=5.0 connected=1]Draw![/wave]"
+			return
 	else:
 		%GameOver.hide()
 	%ResultText.text = "[wave amp=50.0 freq=5.0 connected=1]Player " + str(player_id) + " has won![/wave]"

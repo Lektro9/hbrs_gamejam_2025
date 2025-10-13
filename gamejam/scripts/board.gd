@@ -542,3 +542,9 @@ func debug_print():
 		out += "Timers: " + timer_str + "\n"
 
 	print(out)
+
+func is_board_full() -> bool:
+	for cell in board_cells.values():
+		if not cell.has_chip():
+			return false
+	return true

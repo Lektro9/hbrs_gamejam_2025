@@ -1,14 +1,16 @@
 extends Node2D
 
-signal game_over(winner: int, show_win_screen: bool)
+signal game_over(winner: int, show_win_screen: bool, is_draw: bool)
 signal update_player_score(scores)
 signal show_score_board(should_show: bool)
 signal show_main_menu(should_show: bool)
 signal show_chip_value(should_show: bool)
+signal show_next_chip_ui(should_show: bool)
 signal init_visual_board
 signal scroll_background(is_going_down: bool)
 signal update_curr_chip(chip: ChipInstance)
 signal update_chip_choices(chips: Array[ChipInstance])
+signal clean_up_visuals
 
 @onready var draw_label: Label = $DebugUi/DrawLabel
 @onready var state_chart: StateChart = $StateChart
@@ -188,7 +190,7 @@ func _on_init_state_entered() -> void:
 	show_chip_value.emit(false)
 	update_chip_choices.emit([])
 	current_round_offer_templates.clear()
-	game_over.emit(get_player().player_id, false)
+	game_over.emit(get_player().player_id, false, false)
 	does_player_one_play = true
 
 func _on_init_state_exited() -> void:
@@ -227,6 +229,8 @@ func _on_check_win_state_entered() -> void:
 		set_is_game_won_expression(true)
 	if player_2.score >= score_needed:
 		set_is_game_won_expression(true)
+	if game_board.is_board_full():
+		state_chart.send_event("draw_game")
 
 func _on_switch_player_state_entered() -> void:
 	switch_player()
@@ -245,6 +249,7 @@ func _on_switch_player_state_entered() -> void:
 func _on_player_turn_state_entered() -> void:
 	show_chip_value.emit(true)
 	show_score_board.emit(true)
+	show_next_chip_ui.emit(true)
 	show_main_menu.emit(false)
 	var current_player := get_player()
 	if current_player == null:
@@ -268,10 +273,16 @@ func _on_player_turn_state_entered() -> void:
 
 
 func _on_win_state_entered() -> void:
-	game_over.emit(get_player().player_id, true)
+	game_over.emit(get_player().player_id, true, false)
 
 func _on_draw_state_entered() -> void:
-	draw_label.visible = true
+	game_over.emit(get_player().player_id, true, true)
 
 func _on_draw_state_exited() -> void:
 	draw_label.visible = false
+
+
+func _on_restart_prompt_state_exited() -> void:
+	scroll_background.emit(false)
+	clean_up_visuals.emit()
+	show_next_chip_ui.emit(false)

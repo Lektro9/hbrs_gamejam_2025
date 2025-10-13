@@ -30,6 +30,7 @@ func _init_board():
 
 func _ready():
 	GameManager.init_visual_board.connect(init_visual_board)
+	GameManager.clean_up_visuals.connect(clean_up)
 
 func _draw_empty_board():
 	# Clear old sprites if needed
@@ -161,3 +162,11 @@ func play_recolor_effect(pos: Vector2i, owner_after: int) -> void:
 		_:
 			target_color = Color.WHITE
 	chip.play_recolor_flash(target_color)
+
+func clean_up():
+	for child in filled_grid_container.get_children():
+		child.queue_free()
+	for child in empty_grid_container.get_children():
+		child.queue_free()
+	for child in column_container.get_children():
+		child.queue_free()
