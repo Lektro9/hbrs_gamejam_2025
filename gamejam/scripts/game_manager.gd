@@ -100,7 +100,7 @@ func _pick_special_chip(rng: RandomNumberGenerator) -> Chip:
 		return MEZZO_CHIP.duplicate(true)
 
 func _generate_chip_resource(rng: RandomNumberGenerator, require_special: bool = false) -> Chip:
-	var wants_special := require_special or rng.randi_range(1, 100) <= 34
+	var wants_special := require_special or rng.randi_range(1, 100) <= 20
 	if wants_special:
 		return _pick_special_chip(rng)
 	return DEFAULT_CHIP.duplicate(true)

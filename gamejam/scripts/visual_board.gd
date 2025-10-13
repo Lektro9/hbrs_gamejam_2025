@@ -61,7 +61,7 @@ func _draw_board():
 
 	for y in range(grid_size.y):
 		for x in range(grid_size.x):
-			var cell := GameManager.game_board.get_board_cell_by_coords(x, y)
+			var cell: BoardCell = GameManager.game_board.get_board_cell_by_coords(x, y)
 			if cell == null:
 				continue
 			var chip: ChipInstance = cell.chip
